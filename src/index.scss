@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0F4C81;
+}
+
+body::-webkit-scrollbar {
+  width: .5vw;
+}
+ 
+body::-webkit-scrollbar-thumb {
+  background: #666;
+  opacity: 0.7;
+  border-radius: 20px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
