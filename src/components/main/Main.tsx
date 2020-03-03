@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,7 +8,6 @@ import {
 } from "react-router-dom";
 import './Main.scss';
 import ReactLogo from '../react-logo'
-import { useTranslation } from 'react-i18next';
 const pjson = require('../../../package.json');
 
 console.log(`Version: ${pjson.version}`);
