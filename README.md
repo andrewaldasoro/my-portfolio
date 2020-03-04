@@ -70,6 +70,6 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 ### Help Links
 
-https://react.i18next.com/
-https://webpack.js.org/guides/typescript/#importing-other-assets
-https://microsoft.github.io/TypeSearch/
+https://react.i18next.com/  
+https://webpack.js.org/guides/typescript/#importing-other-assets  
+https://microsoft.github.io/TypeSearch/  
