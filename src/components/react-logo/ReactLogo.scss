@@ -1,25 +1,66 @@
-
 .logo {
-    height: 3vmin;
-    user-select: none;
-  }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    .logo {
-      animation: spin infinite 20s linear;
-      
-      &:hover {
+  height: 3vmin;
+  user-select: none;
+}
+
+.fading-effect {
+  width: 100%;
+  background-color: #031e36;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo {
+    animation: spin infinite 20s linear;
+
+    &:hover {
       animation-play-state: paused;
-      }
     }
-     
   }
 
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .image-container {
+    animation: image-slide 4s cubic-bezier(0.5, 0.5, 0, 1);
   }
+
+  .fading-effect {
+    animation: text-slide 4s cubic-bezier(0.5, 0.5, 0, 1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes image-slide {
+  0% {
+    transform: translatex(-20px) scale(0);
+  }
+  60% {
+    transform: translatex(-20px) scale(1);
+  }
+  90% {
+    transform: translatex(10px) scale(1);
+  }
+  100% {
+    transform: translatex(10px) scale(1);
+  }
+}
+
+@keyframes text-slide {
+  0% {
+    width: 100%;
+  }
+  60% {
+    width: 100%;
+  }
+  77% {
+    width: 0;
+  }
+  100% {
+    width: 0;
+  }
+}
