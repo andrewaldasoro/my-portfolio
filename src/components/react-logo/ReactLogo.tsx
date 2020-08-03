@@ -1,12 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import logo from '../../assets/logo-react.svg';
 import './ReactLogo.scss';
 
 export default function ReactLogo() {
+  const { t } = useTranslation();
+
   return (
     <div className="dw-container">
       <div className="text-container">
-        <p>Developed with </p>
+        <p>{t('developed_with')}</p>
         <div className="fading-effect"></div>
       </div>
       <div className="logo-container">
