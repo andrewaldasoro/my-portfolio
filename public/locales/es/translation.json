@@ -1,5 +1,9 @@
 {
-    "title": "Bienvenido a React y react-i18next",
-    "aboutme": "Sobre mí"
-
+    "title": "CV de Kev",
+    "aboutme": "Sobre Mí",
+    "featured_projects": "Proyectos Destacados",
+    "career": "Carrera",
+    "english": "Inglés",
+    "spanish": "Español",
+    "developed_with": "Desarrollado con "
 }

@@ -1,4 +1,9 @@
 {
-    "title": "Welcome to React and react-i18next",
-    "aboutme": "About Me"
+    "title": "Kev's CV",
+    "aboutme": "About Me",
+    "featured_projects": "Featured Projects",
+    "career": "Career",
+    "english": "English",
+    "spanish": "Spanish",
+    "developed_with": "Developed with "
 }
