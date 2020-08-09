@@ -1,13 +1,13 @@
 {
   "bugs": {
-    "url": "https://github.com/andrewaldasoro/cv/issues"
+    "url": "https://github.com/andrewaldasoro/cv-frontend/issues"
   },
   "license": "Apache-2.0",
   "author": {
     "name": "Kev Aldasoro",
     "email": "andrewaldasoro@gmail.com"
   },
-  "name": "kevs-cv",
+  "name": "cv-frontend",
   "version": "0.1.1",
   "private": true,
   "dependencies": {
@@ -22,7 +22,8 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4000 react-scripts start",
+    "start:windows": "set PORT=4000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -53,5 +54,5 @@
     "@types/react-router-dom": "^5.1.5",
     "typescript": "^3.9.6"
   },
-  "repository": "github:andrewaldasoro/cv"
+  "repository": "github:andrewaldasoro/cv-frontend"
 }
