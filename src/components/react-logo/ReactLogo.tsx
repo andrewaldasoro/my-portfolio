@@ -13,7 +13,7 @@ export default function ReactLogo() {
         <div className="fading-effect"></div>
       </div>
       <div className="logo-container">
-        <img src={logo} className="logo" alt="react logo" />
+        <img src={logo} className="logo" alt="React Logo" data-testid="react-logo"/>
       </div>
     </div>
   );

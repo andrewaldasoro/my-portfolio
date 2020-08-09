@@ -7,7 +7,8 @@ import {
   Link
 } from "react-router-dom";
 import './Main.scss';
-import ReactLogo from '../react-logo'
+import ProfileImage from '../profile-image/ProfileImage';
+import ReactLogo from '../react-logo/ReactLogo'
 
 import githubLogo from '../../assets/logo-github.svg';
 import linkedinLogo from '../../assets/logo-linkedin.svg';
@@ -86,7 +87,7 @@ function Home() {
         {/* <h1>
           {t('title')}
         </h1> */}
-        <img src="bitmoji.png" alt="bitmoji"/> { /* TODO api for bitmoji profile */ }
+        <ProfileImage />
         <h1>Kev Andrew ALDASORO CHAVARRIA</h1>
         <ul>
           <li>
@@ -127,6 +128,7 @@ function Home() {
       </footer>
     </div>
   );
+
 }
 
 function AboutMe() {
@@ -157,10 +159,12 @@ const Loader = () => (
 );
 
 // here app catches the suspense from page in case translations are not yet loaded
-export default function Main() {
+const Main = () => {
   return (
     <Suspense fallback={<Loader />}>
       <Body />
     </Suspense>
   );
 }
+
+export default Main;
