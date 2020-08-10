@@ -9,7 +9,7 @@ export default function ReactLogo() {
   return (
     <div className="dw-container">
       <div className="text-container">
-        <p>{t('developed_with')}</p>
+        <p>{t('developed_with')} ReactJS </p>
         <div className="fading-effect"></div>
       </div>
       <div className="logo-container">
