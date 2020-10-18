@@ -21,6 +21,11 @@ a {
   color: #61dafb;
 }
 
+h1 > a {
+  color: white;
+  text-decoration: none; /* no underline */
+}
+
 .footer {
   // position: relative;
   background-color: #031E36;

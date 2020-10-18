@@ -1,9 +1,10 @@
 {
     "title": "Kev's CV",
-    "aboutme": "About Me",
-    "featured_projects": "Featured Projects",
-    "career": "Career",
     "english": "English",
     "spanish": "Spanish",
-    "developed_with": "Developed with "
+    "developed_with": "Developed with ",
+    "mail": {
+        "subject": "[Your company] is interested on you",
+        "body": "Hi Kev,\n I am very interested in having an interview with you, I saw your resume project.\n Regards, [Your name]."
+    }
 }

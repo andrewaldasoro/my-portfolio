@@ -34,6 +34,18 @@
   user-select: none;
 }
 
+@media (prefers-reduced-motion) {
+  .logo-container {
+    animation: image-slide;
+    animation-fill-mode: forwards;
+  }
+
+  .fading-effect {
+    animation: text-slide;
+    animation-fill-mode: forwards;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .logo {
     animation: spin infinite 20s linear;
