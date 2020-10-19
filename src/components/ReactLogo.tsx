@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/logo-react.svg';
+import logo from '../assets/logo-react.svg';
 import './ReactLogo.scss';
 
 export default function ReactLogo() {

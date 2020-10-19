@@ -20,12 +20,13 @@ class Map extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      lng: 5,
-      lat: 34,
-      zoom: 2,
+      lng: -79,
+      lat: 44,
+      zoom: 5,
       error: null,
       isLoaded: false
     };
+    console.log(window.navigator.language) // TODO Map the location of the language
   }
 
   componentDidMount() {

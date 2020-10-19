@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import './i18n';
-import Main from './components/main/Main';
+import Main from './components/Main';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<Main />, document.getElementById('root'));

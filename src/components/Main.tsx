@@ -7,15 +7,16 @@ import {
   Link
 } from "react-router-dom";
 import './Main.scss';
-import ProfileImage from '../profile-image/ProfileImage';
-import ReactLogo from '../react-logo/ReactLogo'
+import ProfileImage from './ProfileImage';
+import ReactLogo from './ReactLogo'
+import Content from './Content'
+import Map from './Map';
 
-import githubLogo from '../../assets/logo-github.svg';
-import linkedinLogo from '../../assets/logo-linkedin.svg';
-import trelloLogo from '../../assets/logo-trello.svg';
-import Map from '../Map/Map';
+import githubLogo from '../assets/logo-github.svg';
+import linkedinLogo from '../assets/logo-linkedin.svg';
+import trelloLogo from '../assets/logo-trello.svg';
 
-const pjson = require('../../../package.json');
+const pjson = require('../../package.json');
 
 console.log(`Version: ${pjson.version}`);
 
@@ -85,10 +86,10 @@ function Body() {
         <div className="body">
           <Switch>
             <Route exact path="/">
-              <Summary />
-              <Skills />
-              <Employment />
-              <Education />
+              <Content title="summary" />
+              <Content title="skills" />
+              <Content title="employment" />
+              <Content title="education" />
             </Route>
             <Route path="/map">
               <Map />
@@ -117,84 +118,6 @@ function Body() {
     </BrowserRouter>
   );
 }
-
-
-function Summary() {
-  const { t } = useTranslation();
-
-  return (
-    <div id="summary">
-      <h2>{t('summary.title')}</h2>
-      <div>
-        {t('summary.content')}
-      </div>
-    </div>
-  );
-}
-
-function Skills() {
-  const { t } = useTranslation();
-
-  return (
-    <div id="skills">
-      <h2>{t('skills.title')}</h2>
-      <div>
-        {t('skills.content')}
-      </div>
-    </div>
-  );
-}
-
-function Employment() {
-  const { t } = useTranslation();
-
-  return (
-    <div id="employment">
-      <h2>{t('employment.title')}</h2>
-      <div>
-        - August 2017 – September 2020 | Thales Mexico - Software Engineer
-        o Activities:
-        ▪ Implement new features, integration of other software, research and propose the best option for the team.
-        o Software/Programming Language and Others:
-        ▪ HTML, CSS/SCSS, TypeScript and JavaScript/NodeJS (Express, Angular), PHP.
-        ▪ Nginx, Docker, Twilio, PostgreSQL, Elasticsearch, Kibana, Logstash, Beat.
-        ▪ R Lang, Shell Scripting.
-        ▪ GitLab, Stash, JIRA.
-        - March 2017 – July 2017 | Canadian Chamber of Commerce - Web Master
-        o Activities:
-        ▪ Integrate social media to the site, resolve bugs, mass mail automation, preventive maintenance and client relations.
-        o Software/Programming Language and Others:
-        ▪ MailChimp, WordPress, Facebook Pages.
-        ▪ PHP, Python.F
-      </div>
-    </div>
-  );
-}
-
-function Education() {
-  const { t } = useTranslation();
-
-  return (
-    <div id="education">
-      <h2>{t('education.title')}</h2>
-      <div>
-        - August 2014 - June 2018 | TecMilenio University | Graduated as an Administrative and Computer Systems Engineer
-        o Professional License [Mexico]: 11940276
-        o Software/Programming Language and Others:
-        ▪ C++, Java, HTML, CSS, PHP, Flash.
-        ▪ MySQL.
-        - Certificates:
-        ▪ CCNA Routing and Switching: Introduction to Networks (2016-06-10).
-        ▪ Productivity Based on Technological Tools (2018-05-04).
-        ▪ Mobile Apps Development (2018-05-04).
-        ▪ Interactivity and Multimedia Design (2018-05-04).
-        ▪ Information Technologies, Business Semester Mode (2017-12-15).
-        ▪ Angular (2019-02-26).
-      </div>
-    </div>
-  );
-}
-
 
 // loading component for suspense fallback
 const Loader = () => (
