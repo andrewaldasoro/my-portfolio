@@ -11,9 +11,13 @@
   "version": "0.1.1",
   "private": true,
   "dependencies": {
+    "@danmarshall/deckgl-typings": "^4.3.5",
+    "@types/mapbox-gl": "^1.12.5",
+    "deck.gl": "^8.3.1",
     "i18next": "^19.6.0",
     "i18next-browser-languagedetector": "^4.3.1",
     "i18next-xhr-backend": "^3.2.2",
+    "mapbox-gl": "^1.12.0",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

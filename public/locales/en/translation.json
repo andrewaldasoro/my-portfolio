@@ -6,5 +6,21 @@
     "mail": {
         "subject": "[Your company] is interested on you",
         "body": "Hi Kev,\n I am very interested in having an interview with you, I saw your resume project.\n Regards, [Your name]."
+    },
+    "summary": {
+        "title": "Summary",
+        "content": "3 years web full stack software developer with experience angular, express, using typescript.\n Always giving the best of me, putting all my effort to finish activities in the best way on the best time."
+    },
+    "skills": {
+        "title": "Skills",
+        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
+    },
+    "employment": {
+        "title": "Employment",
+        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
+    },
+    "education": {
+        "title": "Education",
+        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
     }
 }
