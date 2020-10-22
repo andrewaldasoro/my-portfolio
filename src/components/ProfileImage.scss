@@ -1,0 +1,16 @@
+.profile-image {
+    border-radius: 50%;
+    clip-path: circle(70px at center);
+    width: 150px;
+    // border: 1px solid white;
+    filter: blur(1px)
+}
+
+.profile-image:hover {
+    animation: discover .75s forwards;
+}
+
+@keyframes discover {
+    from { filter: blur(1px) }
+    to { filter: blur(0px) }
+}

@@ -1,5 +1,10 @@
 {
-    "title": "Bienvenido a React y react-i18next",
-    "aboutme": "Sobre mí"
-
+    "title": "CV de Kev",
+    "english": "Inglés",
+    "spanish": "Español",
+    "developed_with": "Desarrollado con ",
+    "mail": {
+        "body": "[Tu empresa] estamos interesados en ti",
+        "subject": "Hola Kev,\n Estoy muy interesado en tener una entrevista contigo, vi el proyecto de tu CV.\n Saludos, [Tu nombre]."
+    }
 }

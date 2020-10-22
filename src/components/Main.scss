@@ -1,0 +1,34 @@
+.App {
+  text-align: center;
+}
+
+.header {
+  // position: relative;
+  // top: 0;
+  // max-width: 100%;
+  // min-height: 20vh;
+  background-color: #031E36;
+  padding: 0.5em;
+}
+
+.body {
+  // position: relative;
+  // min-height: calc(100% - 15vh);
+  max-width: 100%;
+}
+
+a {
+  color: #61dafb;
+}
+
+h1 > a {
+  color: white;
+  text-decoration: none; /* no underline */
+}
+
+.footer {
+  // position: relative;
+  background-color: #031E36;
+  // width: 100%;
+  // min-height: 15vh;
+}
