@@ -1,6 +1,7 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.scss";
+import { getUrl } from "../services/api";
 
 interface State {
   lat: number;
@@ -26,7 +27,7 @@ class Map extends React.Component<unknown, State> {
   }
 
   componentDidMount(): void {
-    fetch("/api/mapbox-token/create")
+    fetch(getUrl("/mapbox-token/create"))
       .then((res) => res.json())
       .then(
         (result) => {

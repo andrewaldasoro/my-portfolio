@@ -1,5 +1,6 @@
 import React from "react";
 import "./ProfileImage.scss";
+import { getUrl } from "../services/api";
 
 interface State {
   image: string;
@@ -12,7 +13,7 @@ class ProfileImage extends React.Component<unknown, State> {
   }
 
   componentDidMount(): void {
-    fetch("/api/bitmoji")
+    fetch(getUrl("/bitmoji"))
       .then((res) => {
         return res.text();
       })
