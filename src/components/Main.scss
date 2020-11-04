@@ -3,15 +3,15 @@
 }
 
 .header {
-  // position: relative;
-  // top: 0;
-  // max-width: 100%;
-  // min-height: 20vh;
+  width: 100%;
   background-color: #031E36;
   padding: 0.5em;
+  height: calc(15vh + 150px);
 }
 
 .body {
+  height: calc(85vh - 150px);
+  overflow-y: auto;
   // position: relative;
   // min-height: calc(100% - 15vh);
   max-width: 100%;

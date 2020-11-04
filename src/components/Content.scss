@@ -1,1 +1,8 @@
-.content {}
+.content {
+    background-color: rgba(12, 64, 108, 0.6);
+    margin: 10px;
+
+    & > p{
+        color: rgb(222, 222, 222);
+    }
+}
