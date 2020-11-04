@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
+import { Feature, Geometry, GeoJsonProperties } from "geojson";
 import "./Map.scss";
 import { getUrl } from "../services/api";
 
@@ -13,6 +14,8 @@ interface State {
 
 class Map extends React.Component<unknown, State> {
   private mapContainer!: HTMLElement;
+  private covidCases!: Array<any>;
+  private covidCasesActive!: Array<any>;
 
   constructor(props: unknown) {
     super(props);
@@ -26,7 +29,12 @@ class Map extends React.Component<unknown, State> {
     console.log(window.navigator.language); // TODO Map the location of the language
   }
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
+    this.covidCases = await this.getCovidCases();
+    this.covidCasesActive = this.covidCases.filter(
+      (covidCase) => covidCase["Outcome"] === "ACTIVE"
+    );
+
     fetch(getUrl("/mapbox-token/create"))
       .then((res) => res.json())
       .then(
@@ -41,6 +49,33 @@ class Map extends React.Component<unknown, State> {
             style: "mapbox://styles/mapbox/dark-v10",
             center: [this.state.lng, this.state.lat],
             zoom: this.state.zoom,
+          });
+
+          map.on("load", () => {
+            fetch(getUrl("/toronto/neighbourhoods"))
+              .then((res) => res.json())
+              .then((result) => {
+                map.addSource("toronto-neighbourhoods", {
+                  type: "geojson",
+                  data: {
+                    type: "FeatureCollection",
+                    features: this.mapFeatures(result),
+                  },
+                });
+
+                map.addLayer({
+                  id: "toronto-neigh",
+                  type: "fill",
+                  source: "toronto-neighbourhoods",
+                  paint: {
+                    "fill-color": ["get", "color"],
+                    "fill-opacity": 0.4,
+                  },
+                  filter: ["==", "$type", "Polygon"],
+                });
+              });
+
+            // console.log(map.getSource("toronto-neighbourhoods"));
           });
 
           map.on("move", () => {
@@ -82,6 +117,55 @@ class Map extends React.Component<unknown, State> {
         </div>
       );
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private mapFeatures(features: any): Feature<Geometry, GeoJsonProperties>[] {
+    const mappedFeatures: Feature<Geometry, GeoJsonProperties>[] = [];
+    console.log(features.length);
+
+    for (const feature of features) {
+      mappedFeatures.push({
+        type: "Feature",
+        geometry: JSON.parse(feature.geometry) as Geometry,
+        properties: {
+          id: feature.AREA_ID,
+          name: feature.AREA_NAME.split(/ \((\d+)\)/)[0],
+          color: this.getHeatmapColor(feature.AREA_NAME.split(/ \((\d+)\)/)[0]),
+        },
+      });
+    }
+
+    return mappedFeatures;
+  }
+
+  private getRandomColor() {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  private getHeatmapColor(neighbourhood: string): string {
+    // console.log("========" + neighbourhood + "===========");
+    const covidCasesByNeighbouhood = this.covidCasesActive.filter(
+      (covidCase: any) => {
+        // console.log(covidCase["Neighbourhood Name"]);
+        return covidCase["Neighbourhood Name"] === neighbourhood;
+      }
+    );
+
+    console.log(covidCasesByNeighbouhood.length + " cases in " + neighbourhood);
+
+    const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
+    console.log(h);
+    return "hsl(" + h + ", 100%, 50%)";
+  }
+
+  private async getCovidCases(): Promise<any> {
+    return await (await fetch(getUrl("/toronto/covid-cases"))).json();
   }
 }
 
