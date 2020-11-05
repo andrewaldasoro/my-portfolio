@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { Feature, Geometry, GeoJsonProperties } from "geojson";
 import "./Map.scss";
 import { getUrl } from "../services/api";
+import Loader from "./Loader";
 
 interface State {
   lat: number;
@@ -26,7 +27,7 @@ class Map extends React.Component<unknown, State> {
       error: null,
       isLoaded: false,
     };
-    console.log(window.navigator.language); // TODO Map the location of the language
+    // console.log(window.navigator.language); // TODO Map the location of the language
   }
 
   async componentDidMount(): Promise<void> {
@@ -100,7 +101,7 @@ class Map extends React.Component<unknown, State> {
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
-      return <div>Loading...</div>;
+      return <Loader />;
     } else {
       return (
         <div className="Map">
