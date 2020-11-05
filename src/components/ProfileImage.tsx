@@ -6,8 +6,8 @@ interface State {
   image: string;
 }
 
-class ProfileImage extends React.Component<unknown, State> {
-  constructor(props: unknown) {
+class ProfileImage extends React.Component<JSX.IntrinsicAttributes, State> {
+  constructor(props: JSX.IntrinsicAttributes) {
     super(props);
     this.state = { image: "" };
   }
