@@ -1,9 +1,16 @@
 import React from "react";
-import mapboxgl from "mapbox-gl";
-import { Feature, Geometry, GeoJsonProperties } from "geojson";
+import mapboxgl, { GeoJSONSource, LngLatLike } from "mapbox-gl";
+import {
+  FeatureCollection,
+  Geometry,
+  GeoJsonProperties,
+  Polygon,
+} from "geojson";
 import "./Map.scss";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
+import { Alert } from "react-bootstrap";
+import polylabel from "polylabel";
 
 interface State {
   lat: number;
@@ -11,106 +18,184 @@ interface State {
   zoom: number;
   error: Error | null;
   isLoaded: boolean;
+  isLoadingData: boolean;
 }
 
 class Map extends React.Component<unknown, State> {
+  private map!: mapboxgl.Map;
   private mapContainer!: HTMLElement;
-  private covidCases!: Array<any>;
-  private covidCasesActive!: Array<any>;
+  private torontoNeighbourhoods: FeatureCollection<
+    Geometry,
+    GeoJsonProperties
+  > = {
+    type: "FeatureCollection",
+    features: [],
+  };
+  private covidCasesCounter = 0;
+  private reportedDate!: string;
 
   constructor(props: unknown) {
     super(props);
     this.state = {
-      lng: -79,
-      lat: 44,
-      zoom: 5,
+      lng: -79.404,
+      lat: 43.698,
+      zoom: 10,
       error: null,
       isLoaded: false,
+      isLoadingData: true,
     };
-    // console.log(window.navigator.language); // TODO Map the location of the language
   }
 
   async componentDidMount(): Promise<void> {
-    this.covidCases = await this.getCovidCases();
-    this.covidCasesActive = this.covidCases.filter(
-      (covidCase) => covidCase["Outcome"] === "ACTIVE"
+    try {
+      mapboxgl.accessToken = await fetch(getUrl("/mapbox-token/create"))
+        .then((result) => result.json())
+        .then((result) => {
+          this.setState({
+            isLoaded: true,
+          });
+          return result.token as string;
+        });
+    } catch (error) {
+      this.setState({
+        error,
+      });
+    }
+
+    this.map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: "mapbox://styles/mapbox/dark-v10",
+      center: [this.state.lng, this.state.lat],
+      zoom: this.state.zoom,
+      pitch: 40,
+      bearing: 20,
+      antialias: true,
+    });
+
+    this.map.addControl(
+      new mapboxgl.NavigationControl({ visualizePitch: true }),
+      "bottom-right"
     );
 
-    fetch(getUrl("/mapbox-token/create"))
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-          });
-          mapboxgl.accessToken = result.token;
+    this.map.on("move", () => {
+      this.setState({
+        lng: parseFloat(this.map.getCenter().lng.toFixed(3)),
+        lat: parseFloat(this.map.getCenter().lat.toFixed(3)),
+        zoom: parseFloat(this.map.getZoom().toFixed(2)),
+      });
+    });
 
-          const map = new mapboxgl.Map({
-            container: this.mapContainer,
-            style: "mapbox://styles/mapbox/dark-v10",
-            center: [this.state.lng, this.state.lat],
-            zoom: this.state.zoom,
-          });
-
-          map.on("load", () => {
-            fetch(getUrl("/toronto/neighbourhoods"))
-              .then((res) => res.json())
-              .then((result) => {
-                map.addSource("toronto-neighbourhoods", {
-                  type: "geojson",
-                  data: {
-                    type: "FeatureCollection",
-                    features: this.mapFeatures(result),
-                  },
-                });
-
-                map.addLayer({
-                  id: "toronto-neigh",
-                  type: "fill",
-                  source: "toronto-neighbourhoods",
-                  paint: {
-                    "fill-color": ["get", "color"],
-                    "fill-opacity": 0.4,
-                  },
-                  filter: ["==", "$type", "Polygon"],
-                });
-              });
-
-            // console.log(map.getSource("toronto-neighbourhoods"));
-          });
-
-          map.on("move", () => {
-            this.setState({
-              lng: parseInt(map.getCenter().lng.toFixed(4)),
-              lat: parseInt(map.getCenter().lat.toFixed(4)),
-              zoom: parseInt(map.getZoom().toFixed(2)),
-            });
-          });
+    this.map.on("load", async () => {
+      this.map.addSource("toronto-neighbourhoods", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
         },
-        (error) => {
+      });
+
+      this.map.addLayer({
+        id: "toronto-neighbourhoods",
+        type: "fill-extrusion",
+        source: "toronto-neighbourhoods",
+        paint: {
+          "fill-extrusion-color": ["get", "color"],
+          "fill-extrusion-height": ["get", "height"],
+          "fill-extrusion-base": ["get", "base_height"],
+          "fill-extrusion-opacity": 0.5,
+        },
+        filter: ["==", "$type", "Polygon"],
+      });
+
+      this.map.addLayer({
+        id: "neighbourhood-labels",
+        type: "symbol",
+        source: "toronto-neighbourhoods",
+        layout: {
+          "text-field": ["get", "name"],
+          "text-variable-anchor": ["top", "bottom", "left", "right"],
+          "text-radial-offset": 0.5,
+          "text-justify": "center",
+          "text-size": ["interpolate", ["linear"], ["zoom"], 10, 10, 15, 16],
+        },
+        paint: {
+          "text-color": "#202",
+        },
+      });
+
+      await this.recursiveFetchForTorontoNeighbourhoods(
+        "/toronto/neighbourhoods"
+      );
+
+      this.recursiveFetchForTorontoCovidCases("/toronto/covid-cases").finally(
+        () => {
           this.setState({
-            isLoaded: true,
-            error,
+            isLoadingData: false,
           });
         }
       );
+    });
+
+    this.map.on("click", "toronto-neighbourhoods", (e) => {
+      const coordinates = e.features
+        ? (polylabel((e.features[0].geometry as Polygon).coordinates).slice(
+            0,
+            2
+          ) as LngLatLike)
+        : (e.lngLat.toArray() as LngLatLike);
+
+      console.log(
+        JSON.parse(e.features ? e.features[0].properties?.covid : [])
+      );
+
+      const descriptionElements: Array<any> = JSON.parse(
+        e.features ? e.features[0].properties?.covid : []
+      );
+
+      const description = `<p>Neighbourhood: ${
+        e.features ? e.features[0].properties?.name : "No Name"
+      }</p>
+      <p>Total Cases: ${descriptionElements.length}</p>
+      <p>Active Cases: ${
+        descriptionElements.filter((e) => e["Outcome"] === "ACTIVE").length
+      }</p>
+      <p>Hospitalized: ${
+        descriptionElements.filter((e) => e["Currently Hospitalized"] === "Yes")
+          .length
+      }</p>`;
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(this.map);
+    });
+
+    this.map.on("error", (e) => {
+      console.log(e);
+    });
   }
 
   render(): JSX.Element {
-    const { error, isLoaded } = this.state;
+    const { error, isLoaded, isLoadingData } = this.state;
     if (error) {
-      return <div>Error: {error.message}</div>;
+      return <Alert variant="error">Error: {error.message}</Alert>;
     } else if (!isLoaded) {
       return <Loader />;
     } else {
       return (
         <div className="Map">
-          <div className="sidebarStyle">
+          <div className="leftSidebar">
             <div>
               Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{" "}
               {this.state.zoom}
             </div>
+            <div>Last Modified: {this.reportedDate}</div>
           </div>
+          {isLoadingData ? (
+            <div className="rightSidebar">
+              Loading data <Loader />
+            </div>
+          ) : null}
           <div
             ref={(el) => (this.mapContainer = el as HTMLElement)}
             className="mapContainer"
@@ -120,53 +205,138 @@ class Map extends React.Component<unknown, State> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private mapFeatures(features: any): Feature<Geometry, GeoJsonProperties>[] {
-    const mappedFeatures: Feature<Geometry, GeoJsonProperties>[] = [];
-    console.log(features.length);
-
-    for (const feature of features) {
-      mappedFeatures.push({
-        type: "Feature",
-        geometry: JSON.parse(feature.geometry) as Geometry,
-        properties: {
-          id: feature.AREA_ID,
-          name: feature.AREA_NAME.split(/ \((\d+)\)/)[0],
-          color: this.getHeatmapColor(feature.AREA_NAME.split(/ \((\d+)\)/)[0]),
-        },
-      });
-    }
-
-    return mappedFeatures;
-  }
-
-  private getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
+  // private getRandomColor() {
+  //   const letters = "0123456789ABCDEF";
+  //   let color = "#";
+  //   for (let i = 0; i < 6; i++) {
+  //     color += letters[Math.floor(Math.random() * 16)];
+  //   }
+  //   return color;
+  // }
 
   private getHeatmapColor(neighbourhood: string): string {
-    // console.log("========" + neighbourhood + "===========");
-    const covidCasesByNeighbouhood = this.covidCasesActive.filter(
-      (covidCase: any) => {
-        // console.log(covidCase["Neighbourhood Name"]);
-        return covidCase["Neighbourhood Name"] === neighbourhood;
-      }
-    );
+    // TODO with active covid cases length and max
 
-    console.log(covidCasesByNeighbouhood.length + " cases in " + neighbourhood);
-
-    const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
-    console.log(h);
+    // const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
+    const h = Math.random() * 60;
     return "hsl(" + h + ", 100%, 50%)";
   }
 
-  private async getCovidCases(): Promise<any> {
-    return await (await fetch(getUrl("/toronto/covid-cases"))).json();
+  /**
+   *
+   * @param url path to the api
+   * @type string
+   */
+  private recursiveFetchForTorontoNeighbourhoods = (url: string) => {
+    return new Promise((resolve, reject) => {
+      fetch(getUrl(url))
+        .then((result) => result.json())
+        .then((result) => {
+          for (const record of result.records) {
+            this.torontoNeighbourhoods["features"].push({
+              type: "Feature",
+              geometry: JSON.parse(record.geometry) as Geometry,
+              properties: {
+                id: record.AREA_ID,
+                name: record.AREA_NAME.split(/ \((\d+)\)/)[0],
+                color: this.getHeatmapColor(
+                  record.AREA_NAME.split(/ \((\d+)\)/)[0]
+                ),
+                height: 0,
+                base_height: 0,
+                covid: [],
+              },
+            });
+          }
+          (this.map.getSource(
+            "toronto-neighbourhoods"
+          ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
+          if (result.total > this.torontoNeighbourhoods.features.length) {
+            resolve(
+              this.recursiveFetchForTorontoNeighbourhoods(
+                "/toronto/request?path=" +
+                  this.encodeRFC5987ValueChars(result._links.next)
+              )
+            );
+          } else {
+            resolve(result);
+          }
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+
+  /**
+   *
+   * @param url path to the api
+   * @type string
+   */
+  private recursiveFetchForTorontoCovidCases = (url: string) => {
+    return new Promise((resolve, reject) => {
+      fetch(getUrl(url))
+        .then((result) => result.json())
+        .then((result) => {
+          if (result.last_modified) {
+            this.reportedDate = result.last_modified;
+          }
+          for (const record of result.records) {
+            this.torontoNeighbourhoods.features
+              .find(
+                (el) => el.properties?.name === record["Neighbourhood Name"]
+              )
+              ?.properties?.covid.push(record);
+
+            this.incrementKeyNumber(
+              this.torontoNeighbourhoods.features.find(
+                (el) => el.properties?.name === record["Neighbourhood Name"]
+              )?.properties,
+              "height"
+            );
+
+            this.covidCasesCounter++;
+          }
+          (this.map.getSource(
+            "toronto-neighbourhoods"
+          ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
+          if (result.total > this.covidCasesCounter) {
+            resolve(
+              this.recursiveFetchForTorontoCovidCases(
+                "/toronto/request?path=" +
+                  this.encodeRFC5987ValueChars(result._links.next)
+              )
+            );
+          } else {
+            resolve(result);
+          }
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+
+  private encodeRFC5987ValueChars(str: string) {
+    return (
+      encodeURIComponent(str)
+        // Note that although RFC3986 reserves "!", RFC5987 does not,
+        // so we do not need to escape it
+        .replace(/['()]/g, escape) // i.e., %27 %28 %29
+        .replace(/\*/g, "%2A")
+        // The following are not required for percent-encoding per RFC5987,
+        //  so we can allow for a little better readability over the wire: |`^
+        .replace(/%(?:7C|60|5E)/g, unescape)
+    );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private incrementKeyNumber(obj: any, key: string): any {
+    if (obj) {
+      if (obj["Outcome"] !== "ACTIVE") {
+        obj[key]++;
+      }
+    }
   }
 }
 
