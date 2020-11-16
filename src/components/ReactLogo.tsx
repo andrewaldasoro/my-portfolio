@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import logo from "../assets/logo-react.svg";
 import "./ReactLogo.scss";
 
-export default function ReactLogo(): JSX.Element {
+const ReactLogo: React.FC = () => {
   const { t } = useTranslation();
   const [hide, setHide] = useState(false);
 
@@ -26,4 +26,6 @@ export default function ReactLogo(): JSX.Element {
       </div>
     </div>
   );
-}
+};
+
+export default ReactLogo;

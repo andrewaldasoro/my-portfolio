@@ -5,15 +5,16 @@ import { useTranslation } from "react-i18next";
 import "./Navbar.scss";
 import Emoji from "./Emoji";
 import { Link } from "react-router-dom";
+import ProfileImage from "./ProfileImage.lazy";
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <div className="Navbar" data-testid="Navbar">
-      <BNavbar collapseOnSelect expand="lg" bg="transparent" variant="dark">
+      <BNavbar collapseOnSelect expand="lg" bg="blue" variant="dark">
         <BNavbar.Brand as={HashLink} to={{ pathname: "/" }}>
-          {new Emoji("🏡", t("home")).render()}
+          <ProfileImage />
         </BNavbar.Brand>
         <BNavbar.Toggle aria-controls="responsive-navbar-nav" />
         <BNavbar.Collapse id="responsive-navbar-nav">

@@ -1,37 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProfileImage.scss";
+import popWav from "../assets/pop.wav";
 import { getUrl } from "../services/api";
 
-interface State {
-  image: string;
-}
+const ProfileImage: React.FC = () => {
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    getImage().then((image) => {
+      setImage(image);
+    });
+  }, []);
 
-class ProfileImage extends React.Component<JSX.IntrinsicAttributes, State> {
-  constructor(props: JSX.IntrinsicAttributes) {
-    super(props);
-    this.state = { image: "" };
-  }
+  const [pop, setPop] = useState(false);
 
-  componentDidMount(): void {
-    fetch(getUrl("/bitmoji"))
-      .then((res) => {
-        return res.text();
-      })
-      .then((image) => {
-        this.setState({ image: image });
-      });
-  }
+  const popSound = new Audio(popWav);
 
-  render(): JSX.Element {
-    return (
+  return (
+    <div
+      className={"frame " + (pop ? "pop" : "")}
+      onAnimationEnd={() => setPop(false)}
+    >
       <img
-        className="profile-image"
+        onClick={() => {
+          setPop(true);
+          getImage().then((image) => {
+            setImage(image);
+          });
+          popSound.play();
+        }}
+        className={"profile-image"}
         data-testid="ProfileImage"
-        src={this.state.image}
+        src={image}
         alt="Bitmoji"
       />
-    );
-  }
+    </div>
+  );
+};
+
+function getImage() {
+  return fetch(getUrl("/bitmoji"))
+    .then((res) => res.text())
+    .catch((e) => {
+      throw e;
+    });
 }
 
 export default ProfileImage;

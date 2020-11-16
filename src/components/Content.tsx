@@ -18,6 +18,7 @@ const Content: React.FC<ContentProps> = ({ title }) => {
     </Jumbotron>
   );
 };
+
 Content.propTypes = {
   title: PropTypes.string.isRequired,
 };

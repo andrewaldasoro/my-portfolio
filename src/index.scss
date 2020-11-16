@@ -27,3 +27,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+a {
+  color: #61dafb;
+}
+
+h1 > a {
+  color: white;
+  text-decoration: none; /* no underline */
+
+  &:hover {
+    color: white;
+    text-decoration: none; /* no underline */
+  }
+}

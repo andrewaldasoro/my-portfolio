@@ -2,37 +2,12 @@
   text-align: center;
 }
 
-.header {
-  width: 100%;
-  background-color: #031E36;
-  padding: 0.5em;
-  height: calc(15vh + 150px);
-}
-
 .body {
   height: calc(85vh - 150px);
   overflow-y: auto;
-  // position: relative;
-  // min-height: calc(100% - 15vh);
   max-width: 100%;
 }
 
-// .content-container {
-//   height: calc(70vh - 150px);
-// }
-
-a {
-  color: #61dafb;
-}
-
-h1 > a {
-  color: white;
-  text-decoration: none; /* no underline */
-}
-
 .footer {
-  // position: relative;
   background-color: #031E36;
-  // width: 100%;
-  // min-height: 15vh;
 }

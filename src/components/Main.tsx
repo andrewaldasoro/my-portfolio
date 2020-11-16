@@ -40,7 +40,7 @@ function Body() {
 }
 
 // here app catches the suspense from page in case translations are not yet loaded
-const Main = (): JSX.Element => (
+const Main: React.FC = (): JSX.Element => (
   <Suspense fallback={<Loader />}>
     <Body />
   </Suspense>
