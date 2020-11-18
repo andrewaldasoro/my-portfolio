@@ -16,8 +16,8 @@ const Footer: React.FC = () => {
     i18n.changeLanguage(lng);
   };
   return (
-    <div className="Footer" data-testid="Footer">
-      <footer id="bottom" className="footer">
+    <>
+      <footer id="bottom" className="Footer" data-testid="Footer">
         <ReactLogo />
         <address>
           Email: <a href={mailto}>{pjson.author.email}</a>
@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
         </div>
         <div className="version">Version: {pjson.version}</div>
       </footer>
-    </div>
+    </>
   );
 };
 

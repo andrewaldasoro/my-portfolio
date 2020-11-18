@@ -9,7 +9,7 @@ import {
 import "./Map.scss";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
-import { Alert } from "react-bootstrap";
+import { Alert, Button, Spinner } from "react-bootstrap";
 import polylabel from "polylabel";
 
 interface State {
@@ -22,6 +22,7 @@ interface State {
 }
 
 class Map extends React.Component<unknown, State> {
+  private covidChunckCount = 0;
   private map!: mapboxgl.Map;
   private mapContainer!: HTMLElement;
   private torontoNeighbourhoods: FeatureCollection<
@@ -175,6 +176,10 @@ class Map extends React.Component<unknown, State> {
     });
   }
 
+  componentWillUnmount(): void {
+    this.map.remove();
+  }
+
   render(): JSX.Element {
     const { error, isLoaded, isLoadingData } = this.state;
     if (error) {
@@ -193,7 +198,16 @@ class Map extends React.Component<unknown, State> {
           </div>
           {isLoadingData ? (
             <div className="rightSidebar">
-              Loading data <Loader />
+              <Button variant="primary" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Loading...</span>
+              </Button>
             </div>
           ) : null}
           <div
@@ -288,10 +302,14 @@ class Map extends React.Component<unknown, State> {
 
             this.covidCasesCounter++;
           }
-          (this.map.getSource(
-            "toronto-neighbourhoods"
-          ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
+          if (this.covidChunckCount === 20) {
+            (this.map.getSource(
+              "toronto-neighbourhoods"
+            ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
+            this.covidChunckCount = 0;
+          }
           if (result.total > this.covidCasesCounter) {
+            this.covidChunckCount++;
             resolve(
               this.recursiveFetchForTorontoCovidCases(
                 "/toronto/request?path=" +
@@ -299,6 +317,9 @@ class Map extends React.Component<unknown, State> {
               )
             );
           } else {
+            (this.map.getSource(
+              "toronto-neighbourhoods"
+            ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
             resolve(result);
           }
         })

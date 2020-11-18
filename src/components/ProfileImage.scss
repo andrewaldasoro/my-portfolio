@@ -1,15 +1,19 @@
 .frame {
-  border: 5px solid white;
+  border: 2vh solid white;
   border-radius: 50%;
-  display: inline-block;
   overflow: hidden;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 200px;
+  min-height: 200px;
   user-select: none;
 }
 
 .profile-image {
-  display: block;
+  display: flex;
   height: 100%;
-  transform: scale(1.1);
+  width: 100%;
+  transform: scale(1.2);
   cursor: pointer;
 }
 
@@ -21,10 +25,10 @@
   0% {
     transform: scale(1);
   }
-  50% {
+  10%,
+  60%{
     transform: scale(0);
   }
-  // 75%,
   100% {
     transform: scale(1);
   }

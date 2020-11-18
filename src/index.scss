@@ -9,23 +9,24 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0F4C81;
+  background-color: #0f4c81;
   color: white;
 }
 
 ::-webkit-scrollbar {
-  width: .5vw;
+  width: 0.5vw;
+  display: none;
 }
- 
+
 ::-webkit-scrollbar-thumb {
   background: #666;
   opacity: 0.7;
   border-radius: 20px;
+  display: none;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 a {
@@ -34,10 +35,12 @@ a {
 
 h1 > a {
   color: white;
+  font-weight: bolder;
   text-decoration: none; /* no underline */
 
   &:hover {
     color: white;
+    // font-weight: bold;
     text-decoration: none; /* no underline */
   }
 }

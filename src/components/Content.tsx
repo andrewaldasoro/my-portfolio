@@ -13,7 +13,7 @@ const Content: React.FC<ContentProps> = ({ title }) => {
 
   return (
     <Jumbotron id={title} className="content" data-testid="content">
-      <h1>{t(title + ".title")}</h1>
+      <h2>{t(title + ".title")}</h2>
       <p>{t(title + ".content")}</p>
     </Jumbotron>
   );

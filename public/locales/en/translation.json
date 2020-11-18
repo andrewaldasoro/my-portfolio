@@ -1,5 +1,5 @@
 {
-    "title": "Kev's CV",
+    "title": "Kev's resume",
     "greeting": "Hello, my name is",
     "english": "English",
     "spanish": "Spanish",
@@ -14,14 +14,17 @@
     },
     "skills": {
         "title": "Skills",
-        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
+        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
     },
     "employment": {
         "title": "Employment",
-        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
+        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
     },
     "education": {
         "title": "Education",
-        "content": "<li>Web Development</li>\n<li>Agile/SCRUM</li>\n<li>OOP</li>\n<li>Motivated</li>\n<li>Cooperative</li>\n<li>Flexible</li>\n<li>Open-minded</li>\n<li>Responsible</li>\n<li>Neat</li>"
-    }
+        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
+    },
+    "projects": "Prejects",
+    "bottom": "Go to the Bottom",
+    "map": "Map"
 }

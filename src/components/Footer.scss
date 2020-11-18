@@ -1,12 +1,29 @@
+$strong-blue: #031e36;
+
 .Footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100wh;
+    background-color: $strong-blue;
+}
+
+address {
+    margin: 10px 0;
 }
 
 .social-networks {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    width: 300px;
+    margin: 10px 0;
 }
 
 .language > button {
     margin: 2px;
+}
+
+.version {
+    color: $strong-blue;
 }
