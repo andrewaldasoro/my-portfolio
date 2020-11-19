@@ -21,6 +21,7 @@ const ProfileImage: React.FC = () => {
       <div
         className={"frame " + (pop ? "pop" : "")}
         onAnimationEnd={() => setPop(false)}
+        data-testid="ProfileImage"
       >
         <div className="profile-image">
           <Loader />
