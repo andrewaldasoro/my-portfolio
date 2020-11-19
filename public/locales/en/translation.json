@@ -14,17 +14,17 @@
     },
     "skills": {
         "title": "Skills",
-        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
+        "content": "Agile/SCRUM, OOP, Motivated, Cooperative, Flexible, Open-minded, Responsible, Neat"
     },
     "employment": {
         "title": "Employment",
-        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
+        "content": "August 2017 – September 2020 | Thales Mexico - Software Developer"
     },
     "education": {
         "title": "Education",
-        "content": "Web Development, \nAgile/SCRUM, \nOOP, \nMotivated, \nCooperative, \nFlexible, \nOpen-minded, \nResponsible, \nNeat"
+        "content": "August 2014 - June 2018 | TecMilenio University | Bachelor’s degree in Computer Science"
     },
     "projects": "Prejects",
-    "bottom": "Go to the Bottom",
+    "bottom": "Go to Bottom",
     "map": "Map"
 }

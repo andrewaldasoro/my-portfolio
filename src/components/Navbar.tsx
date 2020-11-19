@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
       collapseOnSelect
       className="Navbar"
       expand="lg"
-      bg="transparent"
+      bg="blue"
       variant="dark"
       data-testid="Navbar"
     >

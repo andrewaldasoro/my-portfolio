@@ -120,7 +120,10 @@ class Map extends React.Component<unknown, State> {
           "text-size": ["interpolate", ["linear"], ["zoom"], 10, 10, 15, 16],
         },
         paint: {
-          "text-color": "#202",
+          "text-color": "#111111",
+          "text-halo-width": 0.2,
+          "text-halo-color": "#ffffff",
+          "text-halo-blur": 2,
         },
       });
 
