@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
       <footer id="bottom" className="Footer" data-testid="Footer">
         <ReactLogo />
         <address>
-          Email: <a href={mailto}>{pjson.author.email}</a>
+          {t("email.trans")}: <a href={mailto}>{pjson.author.email}</a>
           <div className="social-networks">
             <a
               href="https://github.com/andrewaldasoro/cv"
@@ -51,6 +51,9 @@ const Footer: React.FC = () => {
           </Button>
           <Button type="button" onClick={() => changeLanguage("en")}>
             {new Emoji("EN 🍁", t("english")).render()}
+          </Button>
+          <Button type="button" onClick={() => changeLanguage("fr")}>
+            {new Emoji("FR 🥖", t("french")).render()}
           </Button>
         </div>
         <div className="version">Version: {pjson.version}</div>

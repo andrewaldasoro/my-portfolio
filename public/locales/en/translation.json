@@ -3,8 +3,10 @@
     "greeting": "Hello, my name is",
     "english": "English",
     "spanish": "Spanish",
+    "french": "French",
     "developed_with": "Developed with ",
-    "mail": {
+    "email": {
+        "trans": "E-mail",
         "subject": "[Your company] is interested on you",
         "body": "Hi Kev,\n I am very interested in having an interview with you, I saw your resume project.\n Regards, [Your name]."
     },
@@ -24,7 +26,7 @@
         "title": "Education",
         "content": "August 2014 - June 2018 | TecMilenio University | Bachelor’s degree in Computer Science"
     },
-    "projects": "Prejects",
+    "projects": "Projects",
     "bottom": "Go to Bottom",
     "map": "Map"
 }
