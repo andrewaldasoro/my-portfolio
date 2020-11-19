@@ -4,7 +4,11 @@ import popWav from "../assets/pop.wav";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
 
+let timeout: NodeJS.Timeout;
+let realPop = false;
+
 const ProfileImage: React.FC = () => {
+  const [pop, setPop] = useState(false);
   const [image, setImage] = useState("");
   useEffect(() => {
     getImage().then((image) => {
@@ -12,15 +16,17 @@ const ProfileImage: React.FC = () => {
     });
   }, []);
 
-  const [pop, setPop] = useState(false);
-
   const popSound = new Audio(popWav);
+
+  function setRealPop(value: boolean): void {
+    setPop(value);
+    realPop = value;
+  }
 
   if (image === "") {
     return (
       <div
-        className={"frame " + (pop ? "pop" : "")}
-        onAnimationEnd={() => setPop(false)}
+        className={"frame " + (pop ? "pop-down" : "pop-up")}
         data-testid="ProfileImage"
       >
         <div className="profile-image">
@@ -30,17 +36,30 @@ const ProfileImage: React.FC = () => {
     );
   } else {
     return (
-      <div
-        className={"frame " + (pop ? "pop" : "")}
-        onAnimationEnd={() => setPop(false)}
-      >
+      <div className={"frame " + (pop ? "pop-down" : "pop-up")}>
         <img
-          onClick={() => {
-            setPop(true);
+          onMouseDown={() => {
+            setRealPop(true);
             getImage().then((image) => {
               setImage(image);
             });
-            popSound.play();
+
+            timeout = setTimeout(() => {
+              if (realPop) {
+                setRealPop(false);
+                popSound.play();
+              }
+            }, 500);
+          }}
+          onMouseUp={() => {
+            if (pop) {
+              clearTimeout(timeout);
+              setRealPop(false);
+              popSound.play();
+            }
+          }}
+          onDragStart={(e) => {
+            e.preventDefault();
           }}
           className="profile-image"
           data-testid="ProfileImage"

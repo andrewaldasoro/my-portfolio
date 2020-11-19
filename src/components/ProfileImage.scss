@@ -17,17 +17,24 @@
   cursor: pointer;
 }
 
-.pop {
-  animation: pop 0.3s ease-in-out forwards;
+.pop-down {
+  animation: pop-down 0.1s forwards;
 }
 
-@keyframes pop {
-  0% {
-    transform: scale(1);
+.pop-up {
+  animation: pop-up 0.1s forwards;
+}
+
+@keyframes pop-down {
+  100%{
+    transform: scale(0.8);
   }
-  10%,
-  60%{
-    transform: scale(0);
+}
+
+
+@keyframes pop-up {
+  0%{
+    transform: scale(0.8);
   }
   100% {
     transform: scale(1);

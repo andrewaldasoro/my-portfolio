@@ -117,13 +117,13 @@ class Map extends React.Component<unknown, State> {
           "text-variable-anchor": ["top", "bottom", "left", "right"],
           "text-radial-offset": 0.5,
           "text-justify": "center",
-          "text-size": ["interpolate", ["linear"], ["zoom"], 10, 10, 15, 16],
+          "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10, 15, 20],
         },
         paint: {
-          "text-color": "#111111",
-          "text-halo-width": 0.2,
-          "text-halo-color": "#ffffff",
-          "text-halo-blur": 2,
+          "text-color": "#ffffff",
+          "text-halo-width": 1,
+          "text-halo-color": "#222222",
+          "text-halo-blur": 1,
         },
       });
 

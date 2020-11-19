@@ -5,6 +5,6 @@ export const mailto: string =
   "mailto:" +
   pjson.author.email +
   "?subject=" +
-  i18next.t("mail.subject") +
+  i18next.t("email.subject") +
   "&body=" +
-  i18next.t("mail.body");
+  i18next.t("email.body");
