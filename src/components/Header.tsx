@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Header.scss";
 import ProfileImage from "./ProfileImage";
-import { mailto } from "../services/shared";
+import { INNER_HEIGHT, mailto } from "../services/shared";
 import { useTranslation } from "react-i18next";
 import Navbar from "./Navbar";
 
@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isFixed = (_ev: Event) => {
-      if (window.pageYOffset >= window.innerHeight) {
+      if (window.pageYOffset >= INNER_HEIGHT) {
         setFixed(true);
       } else {
         setFixed(false);

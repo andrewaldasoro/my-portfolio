@@ -7,6 +7,7 @@ import Loader from "./Loader";
 const ProfileImage: React.FC = () => {
   const [pop, setPop] = useState(false);
   const [image, setImage] = useState("");
+
   useEffect(() => {
     getImage().then((image) => {
       setImage(image);
@@ -30,26 +31,29 @@ const ProfileImage: React.FC = () => {
     return (
       <div className={"frame " + (pop ? "pop-down" : "pop-up")}>
         <img
-          onMouseDown={() => {
+          onDragStart={(ev) => {
+            ev.preventDefault();
+          }}
+          onPointerDown={() => {
             setPop(true);
             getImage().then((image) => {
               setImage(image);
             });
           }}
-          onMouseUp={() => {
+          onPointerUp={() => {
             if (pop) {
               setPop(false);
               popSound.play();
             }
           }}
-          onMouseLeave={() => {
+          onPointerLeave={() => {
             if (pop) {
               setPop(false);
               popSound.play();
             }
           }}
-          onDragStart={(e) => {
-            e.preventDefault();
+          onContextMenu={(ev) => {
+            ev.preventDefault();
           }}
           className="profile-image"
           data-testid="ProfileImage"

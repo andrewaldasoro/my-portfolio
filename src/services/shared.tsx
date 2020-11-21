@@ -8,3 +8,5 @@ export const mailto: string =
   i18next.t("email.subject") +
   "&body=" +
   i18next.t("email.body");
+
+export const INNER_HEIGHT = window.innerHeight;

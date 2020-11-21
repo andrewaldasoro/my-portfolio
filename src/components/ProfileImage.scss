@@ -2,11 +2,11 @@
   border: 2vh solid white;
   border-radius: 50%;
   overflow: hidden;
-  max-width: 100%;
   max-height: 100%;
-  min-width: 200px;
-  min-height: 200px;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .profile-image {
@@ -26,14 +26,13 @@
 }
 
 @keyframes pop-down {
-  100%{
+  100% {
     transform: scale(0.8);
   }
 }
 
-
 @keyframes pop-up {
-  0%{
+  0% {
     transform: scale(0.8);
   }
   100% {
