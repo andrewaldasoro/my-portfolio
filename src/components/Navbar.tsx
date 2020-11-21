@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import "./Navbar.scss";
 import Emoji from "./Emoji";
 import { Link } from "react-router-dom";
-// import ProfileImage from "./ProfileImage";
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
@@ -55,7 +54,7 @@ const Navbar: React.FC = () => {
           </Nav.Link>
           <NavDropdown title={t("projects")} id="collasible-nav-dropdown">
             <NavDropdown.Item as={Link} to={{ pathname: "/map" }}>
-              {t("map")} {new Emoji("😷").render()}
+              {t("map")} {new Emoji("😷", "COVID").render()}
             </NavDropdown.Item>
           </NavDropdown>
         </Nav>

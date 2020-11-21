@@ -3,7 +3,7 @@
     left: 0;
     background: linear-gradient(45deg, #0f4c81, #0f4c81, #031e36, #031e36, #0f4c81, #0f4c81);
     background-size: 600% 600%;
-    
+
     animation: glow 10s ease infinite;
 }
 
@@ -16,6 +16,16 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 0.5em;
+}
+
+.fixed {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.padding-bottom {
+    padding-bottom: 46.8px;
 }
 
 @keyframes glow {

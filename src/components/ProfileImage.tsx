@@ -4,9 +4,6 @@ import popWav from "../assets/pop.wav";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
 
-let timeout: NodeJS.Timeout;
-let realPop = false;
-
 const ProfileImage: React.FC = () => {
   const [pop, setPop] = useState(false);
   const [image, setImage] = useState("");
@@ -17,11 +14,6 @@ const ProfileImage: React.FC = () => {
   }, []);
 
   const popSound = new Audio(popWav);
-
-  function setRealPop(value: boolean): void {
-    setPop(value);
-    realPop = value;
-  }
 
   if (image === "") {
     return (
@@ -39,22 +31,20 @@ const ProfileImage: React.FC = () => {
       <div className={"frame " + (pop ? "pop-down" : "pop-up")}>
         <img
           onMouseDown={() => {
-            setRealPop(true);
+            setPop(true);
             getImage().then((image) => {
               setImage(image);
             });
-
-            timeout = setTimeout(() => {
-              if (realPop) {
-                setRealPop(false);
-                popSound.play();
-              }
-            }, 500);
           }}
           onMouseUp={() => {
             if (pop) {
-              clearTimeout(timeout);
-              setRealPop(false);
+              setPop(false);
+              popSound.play();
+            }
+          }}
+          onMouseLeave={() => {
+            if (pop) {
+              setPop(false);
               popSound.play();
             }
           }}
