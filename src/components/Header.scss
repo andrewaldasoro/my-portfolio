@@ -1,13 +1,4 @@
 .Header {
-    top: 0;
-    left: 0;
-    background: linear-gradient(45deg, #0f4c81, #0f4c81, #031e36, #031e36, #0f4c81, #0f4c81);
-    background-size: 600% 600%;
-
-    animation: glow 10s ease infinite;
-}
-
-.first-header {
     height: 100vh;
     width: 100vw;
     max-width: 100%;
@@ -16,16 +7,10 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 0.5em;
-}
+    background: linear-gradient(45deg, #0f4c81, #0f4c81, #031e36, #031e36, #0f4c81, #0f4c81);
+    background-size: 600% 600%;
 
-.fixed {
-    position: fixed;
-    top: 0;
-    width: 100%;
-}
-
-.padding-bottom {
-    padding-bottom: 40px;
+    animation: glow 10s ease infinite;
 }
 
 @keyframes glow {
