@@ -1,5 +1,5 @@
 {
-    "title": "CV de Kev",
+    "title": "Curriculum Vitae",
     "greeting": "Hola, me llamo",
     "english": "Inglés",
     "spanish": "Español",
@@ -7,8 +7,8 @@
     "developed_with": "Desarrollado con ",
     "email": {
         "trans": "Correo electrónico",
-        "body": "[Tu empresa] estamos interesados en ti",
-        "subject": "Hola Kev,\n Estoy muy interesado en tener una entrevista contigo, vi el proyecto de tu CV.\n Saludos, [Tu nombre]."
+        "subject": "Hola Kev,\n Estoy muy interesado en tener una entrevista contigo, vi el proyecto de tu CV.\n Saludos, [Tu nombre].",
+        "body": "[Tu empresa] estamos interesados en ti"
     },
     "summary": {
         "title": "Resumen",

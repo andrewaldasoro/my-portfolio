@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./Main.scss";
 
 import Loader from "./Loader";
+import Page404 from "./Page404";
 import Header from "./Header";
 import Navbar from "./Navbar";
 import Content from "./Content";
@@ -57,6 +58,9 @@ function Body() {
               </Route>
               <Route path="/map">
                 <Map />
+              </Route>
+              <Route path="*">
+                <Page404 />
               </Route>
             </Switch>
           </div>

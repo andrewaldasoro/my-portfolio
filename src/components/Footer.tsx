@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Footer.scss";
 import { useTranslation } from "react-i18next";
 import Emoji from "./Emoji";
@@ -14,7 +14,13 @@ const Footer: React.FC = () => {
   const { t, i18n } = useTranslation();
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    document.title = t("title") + " - Kev";
   };
+
+  useEffect(() => {
+    document.title = t("title") + " - Kev";
+  }, [t]);
+
   return (
     <>
       <footer id="bottom" className="Footer" data-testid="Footer">
