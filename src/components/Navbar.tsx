@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ForwardRefRenderFunction } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Nav, Navbar as BNavbar, NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -6,11 +6,15 @@ import "./Navbar.scss";
 import Emoji from "./Emoji";
 import { Link } from "react-router-dom";
 
-const Navbar: React.FC = () => {
+const Navbar: ForwardRefRenderFunction<HTMLElement, unknown> = (
+  _props,
+  ref
+) => {
   const { t } = useTranslation();
 
   return (
     <BNavbar
+      ref={ref}
       collapseOnSelect
       className="Navbar"
       expand="lg"
@@ -68,4 +72,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default React.forwardRef(Navbar);
