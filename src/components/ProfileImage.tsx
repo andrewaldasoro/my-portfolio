@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ProfileImage.scss";
 import popWav from "../assets/pop.wav";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
 
-const ProfileImage: React.FC = () => {
+const ProfileImage: React.FC<{ rotation: number }> = (props) => {
+  const ref = useRef<HTMLImageElement>(null);
   const [pop, setPop] = useState(false);
   const [image, setImage] = useState("");
+
+  const popSound = new Audio(popWav);
 
   useEffect(() => {
     getImage().then((image) => {
@@ -14,7 +17,12 @@ const ProfileImage: React.FC = () => {
     });
   }, []);
 
-  const popSound = new Audio(popWav);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.transform =
+        "rotate(" + props.rotation + "turn) scale(1.2)";
+    }
+  }, [props.rotation]);
 
   if (image === "") {
     return (
@@ -31,6 +39,7 @@ const ProfileImage: React.FC = () => {
     return (
       <div className={"frame " + (pop ? "pop-down" : "pop-up")}>
         <img
+          ref={ref}
           onDragStart={(ev) => {
             ev.preventDefault();
           }}
