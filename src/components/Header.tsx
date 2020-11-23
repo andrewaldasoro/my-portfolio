@@ -22,7 +22,6 @@ const Header: React.FC = () => {
         onUpdate: (self) => {
           setProgress(parseFloat(self.progress.toFixed(4)));
         },
-        markers: true,
         id: "header",
       },
     });
