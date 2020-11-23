@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./Main.scss";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/src/ScrollTrigger";
 
 import Loader from "./Loader";
 import Page404 from "./Page404";
@@ -42,6 +44,7 @@ function Body() {
           <div
             style={{
               width: "100%",
+              zIndex: 1,
               position: fixed ? "fixed" : "absolute",
               top: fixed ? 0 : window.innerHeight,
             }}
@@ -72,16 +75,20 @@ function Body() {
 }
 
 // here app catches the suspense from page in case translations are not yet loaded
-const Main: React.FC = (): JSX.Element => (
-  <Suspense
-    fallback={
-      <div className="loading">
-        <Loader />
-      </div>
-    }
-  >
-    <Body />
-  </Suspense>
-);
+const Main: React.FC = (): JSX.Element => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  return (
+    <Suspense
+      fallback={
+        <div className="loading">
+          <Loader />
+        </div>
+      }
+    >
+      <Body />
+    </Suspense>
+  );
+};
 
 export default Main;
