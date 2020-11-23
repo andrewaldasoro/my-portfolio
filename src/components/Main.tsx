@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./Main.scss";
 import { gsap } from "gsap";
@@ -18,14 +18,20 @@ console.log(`Version: ${pjson.version}`);
 
 function Body() {
   const [fixed, setFixed] = useState(false);
-
+  const navbarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isFixed = (_ev: Event) => {
-      if (window.pageYOffset >= window.innerHeight) {
-        setFixed(true);
-      } else {
-        setFixed(false);
+      const navbar = navbarRef.current;
+
+      if (navbar) {
+        const navbarTop = navbar.getBoundingClientRect().y;
+
+        if (navbarTop <= 0) {
+          setFixed(true);
+        } else {
+          setFixed(false);
+        }
       }
     };
 
@@ -41,16 +47,12 @@ function Body() {
       <div className="App">
         <Header />
         <div className="body">
-          <div
+          <Navbar
+            ref={navbarRef}
             style={{
-              width: "100%",
-              zIndex: 1,
               position: fixed ? "fixed" : "absolute",
-              top: fixed ? 0 : window.innerHeight,
             }}
-          >
-            <Navbar />
-          </div>
+          />
           <div className="content-container">
             <Switch>
               <Route exact path="/">
