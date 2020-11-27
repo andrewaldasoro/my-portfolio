@@ -268,6 +268,7 @@ const Map: React.FC = () => {
     return () => {
       // map.remove();
     };
+    // eslint-disable-next-line
   }, []);
 
   return (

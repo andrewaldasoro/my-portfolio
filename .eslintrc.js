@@ -13,7 +13,7 @@ module.exports = {
     'prettier/react',
     'prettier/@typescript-eslint',
   ],
-  plugins: ['react', '@typescript-eslint', 'jest', 'only-warn'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint', 'jest', 'only-warn'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
