@@ -1,14 +1,15 @@
-.Map {
+.map {
     position: relative;
     height: 60vh;
 }
 
-.mapContainer {
+.map-container {
     height: 100%;
     width: 100%;
+    position: relative;
 }
 
-.leftSidebar {
+.left-sidebar {
     display: inline-block;
     position: absolute;
     top: 0;
@@ -21,19 +22,12 @@
     font-weight: bold;
 }
 
-.rightSidebar {
-    display: flex;
-    justify-content: center;
+.right-sidebar {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 12px;
-    background-color: #404040;
-    color: #ffffff;
     z-index: 1 !important;
-    padding: 6px;
-    font-weight: bold;
-    border-radius: 5px;
+    margin: 12px;
 }
 
 .mapboxgl-popup {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import mapboxgl, { GeoJSONSource, LngLatLike } from "mapbox-gl";
 import {
   FeatureCollection,
@@ -8,349 +8,346 @@ import {
 } from "geojson";
 import "./Map.scss";
 import { getUrl } from "../services/api";
-import Loader from "./Loader";
-import { Alert, Button, Spinner } from "react-bootstrap";
+// import Loader from "./Loader";
+import { Button, Spinner } from "react-bootstrap";
 import polylabel from "polylabel";
+import { useRef } from "react";
+import {
+  CovidRecord,
+  DataStore,
+  NeighbourhoodRecord,
+  PackageShow,
+} from "../interfaces/toronto";
 
-interface State {
-  lat: number;
-  lng: number;
-  zoom: number;
-  error: Error | null;
-  isLoaded: boolean;
-  isLoadingData: boolean;
+interface MapboxToken {
+  token: string;
 }
 
-class Map extends React.Component<unknown, State> {
-  private covidChunckCount = 0;
-  private map!: mapboxgl.Map;
-  private mapContainer!: HTMLElement;
-  private torontoNeighbourhoods: FeatureCollection<
+const NEIGHBOURHOODS_ID = "4def3f65-2a65-4a4f-83c4-b2a4aed72d46";
+const COVID_ID = "64b54586-6180-4485-83eb-81e8fae3b8fe";
+
+const Map: React.FC = () => {
+  const [coordinates, setCoordinates] = useState({ lng: -79.404, lat: 43.698 });
+  const [zoom, setZoom] = useState(10);
+  const [reportedDate, setReportedDate] = useState("");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const mapInitialValues = {
+    pitch: 40,
+    bearing: 20,
+    antialias: true,
+  };
+  const torontoNeighbourhoods: FeatureCollection<
     Geometry,
     GeoJsonProperties
   > = {
     type: "FeatureCollection",
     features: [],
   };
-  private covidCasesCounter = 0;
-  private reportedDate!: string;
 
-  constructor(props: unknown) {
-    super(props);
-    this.state = {
-      lng: -79.404,
-      lat: 43.698,
-      zoom: 10,
-      error: null,
-      isLoaded: false,
-      isLoadingData: true,
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
-    try {
+  useEffect(() => {
+    (async () => {
       mapboxgl.accessToken = await fetch(getUrl("/mapbox-token/create"))
-        .then((result) => result.json())
-        .then((result) => {
-          this.setState({
-            isLoaded: true,
-          });
-          return result.token as string;
+        .then((result) => result.json() as Promise<MapboxToken>)
+        .then(({ token }) => token)
+        .catch((err) => {
+          console.error(err);
+          return "";
         });
-    } catch (error) {
-      this.setState({
-        error,
-      });
-    }
 
-    this.map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: "mapbox://styles/mapbox/dark-v10",
-      center: [this.state.lng, this.state.lat],
-      zoom: this.state.zoom,
-      pitch: 40,
-      bearing: 20,
-      antialias: true,
-    });
-
-    this.map.addControl(
-      new mapboxgl.NavigationControl({ visualizePitch: true }),
-      "bottom-right"
-    );
-
-    this.map.on("move", () => {
-      this.setState({
-        lng: parseFloat(this.map.getCenter().lng.toFixed(3)),
-        lat: parseFloat(this.map.getCenter().lat.toFixed(3)),
-        zoom: parseFloat(this.map.getZoom().toFixed(2)),
-      });
-    });
-
-    this.map.on("load", async () => {
-      this.map.addSource("toronto-neighbourhoods", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
+      const map = new mapboxgl.Map({
+        container: ref.current as HTMLElement,
+        style: "mapbox://styles/mapbox/dark-v10",
+        center: [coordinates.lng, coordinates.lat],
+        zoom,
+        ...mapInitialValues,
       });
 
-      this.map.addLayer({
-        id: "toronto-neighbourhoods",
-        type: "fill-extrusion",
-        source: "toronto-neighbourhoods",
-        paint: {
-          "fill-extrusion-color": ["get", "color"],
-          "fill-extrusion-height": ["get", "height"],
-          "fill-extrusion-base": ["get", "base_height"],
-          "fill-extrusion-opacity": 0.5,
-        },
-        filter: ["==", "$type", "Polygon"],
-      });
-
-      this.map.addLayer({
-        id: "neighbourhood-labels",
-        type: "symbol",
-        source: "toronto-neighbourhoods",
-        layout: {
-          "text-field": ["get", "name"],
-          "text-variable-anchor": ["top", "bottom", "left", "right"],
-          "text-radial-offset": 0.5,
-          "text-justify": "center",
-          "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10, 15, 20],
-        },
-        paint: {
-          "text-color": "#ffffff",
-          "text-halo-width": 1,
-          "text-halo-color": "#222222",
-          "text-halo-blur": 1,
-        },
-      });
-
-      await this.recursiveFetchForTorontoNeighbourhoods(
-        "/toronto/neighbourhoods"
+      map.addControl(
+        new mapboxgl.NavigationControl({ visualizePitch: true }),
+        "bottom-right"
       );
 
-      this.recursiveFetchForTorontoCovidCases("/toronto/covid-cases").finally(
-        () => {
-          this.setState({
-            isLoadingData: false,
-          });
+      map.on("move", () => {
+        setCoordinates({
+          lng: parseFloat(map.getCenter().lng.toFixed(3)),
+          lat: parseFloat(map.getCenter().lat.toFixed(3)),
+        });
+        setZoom(parseFloat(map.getZoom().toFixed(2)));
+      });
+
+      map.on("load", async () => {
+        map.addSource("toronto-neighbourhoods", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        });
+
+        map.addLayer({
+          id: "toronto-neighbourhoods",
+          type: "fill-extrusion",
+          source: "toronto-neighbourhoods",
+          paint: {
+            "fill-extrusion-color": ["get", "color"],
+            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-base": ["get", "base_height"],
+            "fill-extrusion-opacity": 0.5,
+          },
+          filter: ["==", "$type", "Polygon"],
+        });
+
+        map.addLayer({
+          id: "neighbourhood-labels",
+          type: "symbol",
+          source: "toronto-neighbourhoods",
+          layout: {
+            "text-field": ["get", "name"],
+            "text-variable-anchor": ["top", "bottom", "left", "right"],
+            "text-radial-offset": 0.5,
+            "text-justify": "center",
+            "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10, 15, 20],
+          },
+          paint: {
+            "text-color": "#ffffff",
+            "text-halo-width": 1,
+            "text-halo-color": "#222222",
+            "text-halo-blur": 1,
+          },
+        });
+
+        const { id: nId, total: nTotal } = await fetchTorontoPackageShow(`{
+            result(id: "${NEIGHBOURHOODS_ID}") {
+              title
+              resources {
+                datastoreActive
+                id
+                format
+                total
+              }
+            }
+          }`).then((response) => {
+          const { resources } = response;
+          const resource = resources.find((r) => r.datastoreActive);
+          if (resource) {
+            setReportedDate(resource.lastModified);
+            return { id: resource.id, total: resource.total };
+          } else {
+            return { id: undefined, total: undefined };
+          }
+        });
+
+        if (nId && nTotal) {
+          const totalPages = nTotal / 100;
+          for (let page = 0; page < totalPages; page++) {
+            for (const record of (
+              await fetchTorontoDataStore(`{
+              result(id: "${nId}", page: ${page}) {
+                neighbourhoodsRecords {
+                  geometry
+                  areaId
+                  areaName
+                }
+              }
+            }`)
+            ).neighbourhoodsRecords as NeighbourhoodRecord[]) {
+              torontoNeighbourhoods["features"].push({
+                type: "Feature",
+                geometry: JSON.parse(record.geometry) as Geometry,
+                properties: {
+                  id: record.areaId,
+                  name: record.areaName.split(/ \((\d+)\)/)[0],
+                  color: getHeatmapColor(
+                    record.areaName.split(/ \((\d+)\)/)[0]
+                  ),
+                  height: 0,
+                  base_height: 0,
+                  covid: [],
+                },
+              });
+            }
+          }
+          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+            torontoNeighbourhoods
+          );
         }
-      );
-    });
 
-    this.map.on("click", "toronto-neighbourhoods", (e) => {
-      const coordinates = e.features
-        ? (polylabel((e.features[0].geometry as Polygon).coordinates).slice(
-            0,
-            2
-          ) as LngLatLike)
-        : (e.lngLat.toArray() as LngLatLike);
+        const { id: cId, total: cTotal } = await fetchTorontoPackageShow(`{
+            result(id: "${COVID_ID}") {
+              title
+              resources {
+                datastoreActive
+                id
+                format
+                lastModified
+                total
+              }
+            }
+          }`).then(({ resources }) => {
+          const resource = resources.find((r) => r.datastoreActive);
+          if (resource) {
+            setReportedDate(resource.lastModified);
+            return { id: resource.id, total: resource.total };
+          } else {
+            return { id: undefined, total: undefined };
+          }
+        });
+        if (cId && cTotal) {
+          const totalPages = cTotal / 100;
+          for (let page = 0; page < totalPages; page++) {
+            for (const record of (
+              await fetchTorontoDataStore(`{
+              result(id: "${cId}", page:${page}) {
+                covidRecords {
+                  neighbourhoodName
+                  outcome
+                  currentlyHospitalized
+                }
+              }
+            }`)
+            ).covidRecords as CovidRecord[]) {
+              torontoNeighbourhoods.features
+                .find((el) => el.properties?.name === record.neighbourhoodName)
+                ?.properties?.covid.push(record);
 
-      console.log(
-        JSON.parse(e.features ? e.features[0].properties?.covid : [])
-      );
+              incrementKeyNumber(
+                torontoNeighbourhoods.features.find(
+                  (el) => el.properties?.name === record.neighbourhoodName
+                )?.properties,
+                "height"
+              );
+            }
+            if (page % 5 === 0) {
+              (map.getSource(
+                "toronto-neighbourhoods"
+              ) as GeoJSONSource).setData(torontoNeighbourhoods);
+            }
+          }
+          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+            torontoNeighbourhoods
+          );
 
-      const descriptionElements: Array<any> = JSON.parse(
-        e.features ? e.features[0].properties?.covid : []
-      );
+          setIsDataLoaded(true);
+        }
+      });
 
-      const description = `<p>Neighbourhood: ${
-        e.features ? e.features[0].properties?.name : "No Name"
-      }</p>
-      <p>Total Cases: ${descriptionElements.length}</p>
-      <p>Active Cases: ${
-        descriptionElements.filter((e) => e["Outcome"] === "ACTIVE").length
-      }</p>
-      <p>Hospitalized: ${
-        descriptionElements.filter((e) => e["Currently Hospitalized"] === "Yes")
-          .length
-      }</p>`;
+      map.on("click", "toronto-neighbourhoods", (ev) => {
+        const coordinates = ev.features
+          ? (polylabel((ev.features[0].geometry as Polygon).coordinates).slice(
+              0,
+              2
+            ) as LngLatLike)
+          : (ev.lngLat.toArray() as LngLatLike);
 
-      new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(this.map);
-    });
+        const descriptionElements: Array<CovidRecord> = JSON.parse(
+          ev.features ? ev.features[0].properties?.covid : []
+        );
 
-    this.map.on("error", (e) => {
-      console.log(e);
-    });
-  }
+        const description = `<h5>${
+          ev.features ? ev.features[0].properties?.name : "No Name"
+        }</h5>
+        <p>Total Cases: ${descriptionElements.length}</p>
+        <p>Active Cases: ${
+          descriptionElements.filter((e) => e.outcome === "ACTIVE").length
+        }</p>
+        <p>Hospitalized: ${
+          descriptionElements.filter((e) => e.currentlyHospitalized === "Yes")
+            .length
+        }</p>`;
 
-  componentWillUnmount(): void {
-    this.map.remove();
-  }
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(description)
+          .addTo(map);
+      });
+    })();
 
-  render(): JSX.Element {
-    const { error, isLoaded, isLoadingData } = this.state;
-    if (error) {
-      return <Alert variant="error">Error: {error.message}</Alert>;
-    } else if (!isLoaded) {
-      return <Loader />;
-    } else {
-      return (
-        <div className="Map">
-          <div className="leftSidebar">
-            <div>
-              Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{" "}
-              {this.state.zoom}
-            </div>
-            <div>Last Modified: {this.reportedDate}</div>
-          </div>
-          {isLoadingData ? (
-            <div className="rightSidebar">
-              <Button variant="primary" disabled>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                <span className="sr-only">Loading...</span>
-              </Button>
-            </div>
-          ) : null}
-          <div
-            ref={(el) => (this.mapContainer = el as HTMLElement)}
-            className="mapContainer"
-          />
+    return () => {
+      // map.remove();
+    };
+  }, []);
+
+  return (
+    <div className="map-container">
+      <div className="left-sidebar">
+        <div>
+          Longitude: {coordinates.lng} | Latitude: {coordinates.lat} | Zoom:{" "}
+          {zoom}
         </div>
-      );
-    }
-  }
+        <div>Last Modified: {reportedDate}</div>
+      </div>
+      <div className="right-sidebar">
+        {isDataLoaded ? null : (
+          <Button variant="primary" disabled>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            <span className="sr-only">Loading...</span>
+          </Button>
+        )}
+      </div>
+      <div ref={ref} className="map" />
+    </div>
+  );
+};
 
-  private getHeatmapColor(neighbourhood: string): string {
-    // TODO with active covid cases length and max
-
-    // const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
-    const h = Math.random() * 60;
-    return "hsl(" + h + ", 100%, 50%)";
-  }
-
-  /**
-   *
-   * @param url path to the api
-   * @type string
-   */
-  private recursiveFetchForTorontoNeighbourhoods = (url: string) => {
-    return new Promise((resolve, reject) => {
-      fetch(getUrl(url))
-        .then((result) => result.json())
-        .then((result) => {
-          for (const record of result.records) {
-            this.torontoNeighbourhoods["features"].push({
-              type: "Feature",
-              geometry: JSON.parse(record.geometry) as Geometry,
-              properties: {
-                id: record.AREA_ID,
-                name: record.AREA_NAME.split(/ \((\d+)\)/)[0],
-                color: this.getHeatmapColor(
-                  record.AREA_NAME.split(/ \((\d+)\)/)[0]
-                ),
-                height: 0,
-                base_height: 0,
-                covid: [],
-              },
-            });
-          }
-          (this.map.getSource(
-            "toronto-neighbourhoods"
-          ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
-          if (result.total > this.torontoNeighbourhoods.features.length) {
-            resolve(
-              this.recursiveFetchForTorontoNeighbourhoods(
-                "/toronto/request?path=" +
-                  this.encodeRFC5987ValueChars(result._links.next)
-              )
-            );
-          } else {
-            resolve(result);
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
+/**
+ *
+ * @param path Fetch path
+ * @type string
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const fetchOr = (path: string, query: string) =>
+  fetch(getUrl(path), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ query }),
+  })
+    .then((result) => result.json())
+    .then((result) => result.data.result)
+    .catch((err) => {
+      console.error(err);
     });
-  };
 
-  /**
-   *
-   * @param url path to the api
-   * @type string
-   */
-  private recursiveFetchForTorontoCovidCases = (url: string) => {
-    return new Promise((resolve, reject) => {
-      fetch(getUrl(url))
-        .then((result) => result.json())
-        .then((result) => {
-          if (result.last_modified) {
-            this.reportedDate = result.last_modified;
-          }
-          for (const record of result.records) {
-            this.torontoNeighbourhoods.features
-              .find(
-                (el) => el.properties?.name === record["Neighbourhood Name"]
-              )
-              ?.properties?.covid.push(record);
+/**
+ *
+ * @param query GraphQL query
+ * @type string
+ */
+const fetchTorontoPackageShow = (query: string): Promise<PackageShow> =>
+  fetchOr("/toronto/package-show", query);
 
-            this.incrementKeyNumber(
-              this.torontoNeighbourhoods.features.find(
-                (el) => el.properties?.name === record["Neighbourhood Name"]
-              )?.properties,
-              "height"
-            );
+/**
+ *
+ * @param query GraphQL query
+ * @type string
+ */
+const fetchTorontoDataStore = (query: string): Promise<DataStore> =>
+  fetchOr("/toronto/datastore", query);
 
-            this.covidCasesCounter++;
-          }
-          if (this.covidChunckCount === 20) {
-            (this.map.getSource(
-              "toronto-neighbourhoods"
-            ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
-            this.covidChunckCount = 0;
-          }
-          if (result.total > this.covidCasesCounter) {
-            this.covidChunckCount++;
-            resolve(
-              this.recursiveFetchForTorontoCovidCases(
-                "/toronto/request?path=" +
-                  this.encodeRFC5987ValueChars(result._links.next)
-              )
-            );
-          } else {
-            (this.map.getSource(
-              "toronto-neighbourhoods"
-            ) as GeoJSONSource).setData(this.torontoNeighbourhoods);
-            resolve(result);
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
+function getHeatmapColor(neighbourhood: string): string {
+  // TODO with active covid cases length and max
 
-  private encodeRFC5987ValueChars(str: string) {
-    return (
-      encodeURIComponent(str)
-        // Note that although RFC3986 reserves "!", RFC5987 does not,
-        // so we do not need to escape it
-        .replace(/['()]/g, escape) // i.e., %27 %28 %29
-        .replace(/\*/g, "%2A")
-        // The following are not required for percent-encoding per RFC5987,
-        //  so we can allow for a little better readability over the wire: |`^
-        .replace(/%(?:7C|60|5E)/g, unescape)
-    );
-  }
+  // const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
+  const h = Math.random() * 60;
+  return "hsl(" + h + ", 100%, 50%)";
+}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private incrementKeyNumber(obj: any, key: string): any {
-    if (obj) {
-      if (obj["Outcome"] !== "ACTIVE") {
-        obj[key]++;
-      }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function incrementKeyNumber(obj: any, key: string): any {
+  if (obj) {
+    if (obj["outcome"] !== "ACTIVE") {
+      obj[key]++;
     }
   }
 }
