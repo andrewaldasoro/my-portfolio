@@ -22,9 +22,6 @@ const Navbar = React.forwardRef<HTMLDivElement, { style?: CSSProperties }>(
           variant="dark"
           data-testid="Navbar"
         >
-          {/* <BNavbar.Brand as={HashLink} to={{ pathname: "/" }}>
-        <ProfileImage />
-      </BNavbar.Brand> */}
           <BNavbar.Toggle aria-controls="responsive-navbar-nav" />
           <BNavbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">

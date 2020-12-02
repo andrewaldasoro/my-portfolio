@@ -6,6 +6,8 @@
   <a href="https://github.com/andrewaldasoro/cv-frontend"><img alt="Deploy status" src="https://github.com/andrewaldasoro/cv-frontend/workflows/Deploy/badge.svg"></a>
 </p>
 
+[Demo Proyect](https://andrewaldasoro.me)
+
 
 # REACT
 

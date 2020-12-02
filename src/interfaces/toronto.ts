@@ -8,6 +8,18 @@ export interface NeighbourhoodRecord {
   geometry: string;
   areaId: string;
   areaName: string;
+  areaAttrId: number;
+  parentAreaId: number;
+  areaShortCode: string;
+  areaLongCode: string;
+  areaDesc: string;
+  x: number;
+  y: number;
+  longitude: number;
+  latitude: number;
+  objectId: number;
+  shapeArea: number;
+  shapeLenght: number;
 }
 
 export interface CovidRecord {

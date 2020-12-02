@@ -32,7 +32,6 @@ const Header: React.FC = () => {
       <ProfileImage rotation={progress} />
       <h1>
         <a href={mailto}>{t("greeting")} Kev Aldasoro.</a>
-        {/* TODO add typing effect */}
       </h1>
     </div>
   );

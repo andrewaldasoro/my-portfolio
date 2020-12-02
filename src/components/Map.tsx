@@ -92,9 +92,23 @@ const Map: React.FC = () => {
           type: "fill-extrusion",
           source: "toronto-neighbourhoods",
           paint: {
-            "fill-extrusion-color": ["get", "color"],
+            "fill-extrusion-color": [
+              "interpolate",
+              ["linear"],
+              [
+                "/",
+                ["get", "covidActiveCases"],
+                ["/", ["get", "shapeArea"], 1000000],
+              ],
+              0,
+              "black",
+              1,
+              "orange",
+              10,
+              "red",
+            ],
             "fill-extrusion-height": ["get", "height"],
-            "fill-extrusion-base": ["get", "base_height"],
+            "fill-extrusion-base": 0,
             "fill-extrusion-opacity": 0.5,
           },
           filter: ["==", "$type", "Polygon"],
@@ -150,6 +164,7 @@ const Map: React.FC = () => {
                   geometry
                   areaId
                   areaName
+                  shapeArea
                 }
               }
             }`)
@@ -160,11 +175,9 @@ const Map: React.FC = () => {
                 properties: {
                   id: record.areaId,
                   name: record.areaName.split(/ \((\d+)\)/)[0],
-                  color: getHeatmapColor(
-                    record.areaName.split(/ \((\d+)\)/)[0]
-                  ),
+                  shapeArea: record.shapeArea,
                   height: 0,
-                  base_height: 0,
+                  covidActiveCases: 0,
                   covid: [],
                 },
               });
@@ -221,6 +234,21 @@ const Map: React.FC = () => {
               );
             }
             if (page % 5 === 0) {
+              // const covidValues: number[] = torontoNeighbourhoods.features.map(
+              //   (f) => {
+              //     const covidActiveCases = f.properties?.covid.filter(
+              //       (e: CovidRecord) => e.outcome === "ACTIVE"
+              //     ).length;
+
+              //     if (f.properties) {
+              //       f.properties.covidActiveCases = covidActiveCases;
+              //     }
+
+              //     return covidActiveCases;
+              //   }
+              // );
+              // max = Math.max(...covidValues);
+
               (map.getSource(
                 "toronto-neighbourhoods"
               ) as GeoJSONSource).setData(torontoNeighbourhoods);
@@ -243,7 +271,7 @@ const Map: React.FC = () => {
           : (ev.lngLat.toArray() as LngLatLike);
 
         const descriptionElements: Array<CovidRecord> = JSON.parse(
-          ev.features ? ev.features[0].properties?.covid : []
+          ev.features ? ev.features[0].properties?.covid : "[]"
         );
 
         const description = `<h5>${
@@ -336,16 +364,8 @@ const fetchTorontoPackageShow = (query: string): Promise<PackageShow> =>
 const fetchTorontoDataStore = (query: string): Promise<DataStore> =>
   fetchOr("/toronto/datastore", query);
 
-function getHeatmapColor(neighbourhood: string): string {
-  // TODO with active covid cases length and max
-
-  // const h = (1.0 - covidCasesByNeighbouhood.length) * 240;
-  const h = Math.random() * 60;
-  return "hsl(" + h + ", 100%, 50%)";
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function incrementKeyNumber(obj: any, key: string): any {
+function incrementKeyNumber(obj: any, key: string): void {
   if (obj) {
     if (obj["outcome"] !== "ACTIVE") {
       obj[key]++;
