@@ -103,11 +103,13 @@ const Map: React.FC = () => {
               0,
               "black",
               1,
+              "yellow",
+              20,
               "orange",
-              10,
+              50,
               "red",
             ],
-            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-height": ["get", "covidActiveCases"],
             "fill-extrusion-base": 0,
             "fill-extrusion-opacity": 0.5,
           },
@@ -176,7 +178,6 @@ const Map: React.FC = () => {
                   id: record.areaId,
                   name: record.areaName.split(/ \((\d+)\)/)[0],
                   shapeArea: record.shapeArea,
-                  height: 0,
                   covidActiveCases: 0,
                   covid: [],
                 },
@@ -230,7 +231,7 @@ const Map: React.FC = () => {
                 torontoNeighbourhoods.features.find(
                   (el) => el.properties?.name === record.neighbourhoodName
                 )?.properties,
-                "height"
+                "covidActiveCases"
               );
             }
             if (page % 5 === 0) {
