@@ -1,6 +1,6 @@
 .map {
     position: relative;
-    height: 60vh;
+    height: 100%;
 }
 
 .map-container {
@@ -13,7 +13,7 @@
     display: inline-block;
     position: absolute;
     top: 0;
-    left: 0;
+    transform: translateX(-50%);
     margin: 12px;
     background-color: #404040;
     color: #ffffff;

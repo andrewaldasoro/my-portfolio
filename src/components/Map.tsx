@@ -18,6 +18,7 @@ import {
   NeighbourhoodRecord,
   PackageShow,
 } from "../interfaces/toronto";
+// import Emoji from "./Emoji";
 
 interface MapboxToken {
   token: string;
@@ -26,13 +27,17 @@ interface MapboxToken {
 const NEIGHBOURHOODS_ID = "4def3f65-2a65-4a4f-83c4-b2a4aed72d46";
 const COVID_ID = "64b54586-6180-4485-83eb-81e8fae3b8fe";
 
+const INITIAL_COORDINATES = { lng: -79.404, lat: 43.698 };
+
 const Map: React.FC = () => {
-  const [coordinates, setCoordinates] = useState({ lng: -79.404, lat: 43.698 });
+  const [coordinates, setCoordinates] = useState(INITIAL_COORDINATES);
   const [zoom, setZoom] = useState(10);
   const [reportedDate, setReportedDate] = useState("");
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
+
+  // let map: mapboxgl.Map;
 
   const mapInitialValues = {
     pitch: 40,
@@ -64,6 +69,8 @@ const Map: React.FC = () => {
         zoom,
         ...mapInitialValues,
       });
+
+      map.resize();
 
       map.addControl(
         new mapboxgl.NavigationControl({ visualizePitch: true }),
@@ -300,6 +307,10 @@ const Map: React.FC = () => {
     // eslint-disable-next-line
   }, []);
 
+  // const centerMap = (map: mapboxgl.Map) => {
+  //   if (map) map.flyTo({ center: INITIAL_COORDINATES });
+  // };
+
   return (
     <div className="map-container">
       <div className="left-sidebar">
@@ -322,6 +333,13 @@ const Map: React.FC = () => {
             <span className="sr-only">Loading...</span>
           </Button>
         )}
+        {/* <Button
+          onClick={() => {
+            centerMap(map);
+          }}
+        >
+          {new Emoji("🏡", "Center").render()}
+        </Button> */}
       </div>
       <div ref={ref} className="map" />
     </div>

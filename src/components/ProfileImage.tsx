@@ -4,7 +4,7 @@ import popWav from "../assets/pop.wav";
 import { getUrl } from "../services/api";
 import Loader from "./Loader";
 
-const ProfileImage: React.FC<{ rotation: number }> = (props) => {
+const ProfileImage: React.FC<{ rotation?: number }> = (props) => {
   const ref = useRef<HTMLImageElement>(null);
   const [pop, setPop] = useState(false);
   const [image, setImage] = useState("");

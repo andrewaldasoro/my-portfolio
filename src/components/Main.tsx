@@ -13,6 +13,7 @@ import Map from "./Map";
 import Footer from "./Footer";
 
 import pjson from "../../package.json";
+import FullScreenContainer from "./FullScreenContainer";
 
 console.log(`Version: ${pjson.version}`);
 
@@ -62,7 +63,9 @@ function Body() {
                 <Content title="education" />
               </Route>
               <Route path="/map">
-                <Map />
+                <FullScreenContainer>
+                  <Map />
+                </FullScreenContainer>
               </Route>
               <Route path="*">
                 <Page404 />

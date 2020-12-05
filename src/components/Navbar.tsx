@@ -14,7 +14,7 @@ const Navbar = React.forwardRef<HTMLDivElement, { style?: CSSProperties }>(
     return (
       <div style={{ position: "relative" }}>
         <BNavbar
-          style={{ ...props.style, zIndex: 99 }}
+          style={{ ...props.style, zIndex: 10 }}
           collapseOnSelect
           className="Navbar"
           expand="lg"
