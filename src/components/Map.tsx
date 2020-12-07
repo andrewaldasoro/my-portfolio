@@ -18,16 +18,14 @@ import {
   NeighbourhoodRecord,
   PackageShow,
 } from "../interfaces/toronto";
-// import Emoji from "./Emoji";
-
-interface MapboxToken {
-  token: string;
-}
+import Emoji from "./Emoji";
 
 const NEIGHBOURHOODS_ID = "4def3f65-2a65-4a4f-83c4-b2a4aed72d46";
 const COVID_ID = "64b54586-6180-4485-83eb-81e8fae3b8fe";
 
 const INITIAL_COORDINATES = { lng: -79.404, lat: 43.698 };
+
+let map: mapboxgl.Map;
 
 const Map: React.FC = () => {
   const [coordinates, setCoordinates] = useState(INITIAL_COORDINATES);
@@ -37,13 +35,12 @@ const Map: React.FC = () => {
 
   const ref = useRef<HTMLDivElement>(null);
 
-  // let map: mapboxgl.Map;
-
   const mapInitialValues = {
     pitch: 40,
     bearing: 20,
     antialias: true,
   };
+
   const torontoNeighbourhoods: FeatureCollection<
     Geometry,
     GeoJsonProperties
@@ -51,98 +48,94 @@ const Map: React.FC = () => {
     type: "FeatureCollection",
     features: [],
   };
+  useEffect(() => {
+    if (map) map.resize();
+  }, [map]);
 
   useEffect(() => {
-    (async () => {
-      mapboxgl.accessToken = await fetch(getUrl("/mapbox-token/create"))
-        .then((result) => result.json() as Promise<MapboxToken>)
-        .then(({ token }) => token)
-        .catch((err) => {
-          console.error(err);
-          return "";
-        });
+    const _map = new mapboxgl.Map({
+      container: ref.current as HTMLElement,
+      style: "mapbox://styles/mapbox/dark-v10",
+      center: [coordinates.lng, coordinates.lat],
+      zoom,
+      ...mapInitialValues,
+    });
 
-      const map = new mapboxgl.Map({
-        container: ref.current as HTMLElement,
-        style: "mapbox://styles/mapbox/dark-v10",
-        center: [coordinates.lng, coordinates.lat],
-        zoom,
-        ...mapInitialValues,
+    map = _map;
+
+    _map.resize();
+
+    _map.addControl(
+      new mapboxgl.NavigationControl({ visualizePitch: true }),
+      "bottom-right"
+    );
+
+    _map.on("move", () => {
+      setCoordinates({
+        lng: parseFloat(_map.getCenter().lng.toFixed(3)),
+        lat: parseFloat(_map.getCenter().lat.toFixed(3)),
+      });
+      setZoom(parseFloat(_map.getZoom().toFixed(2)));
+    });
+
+    _map.on("load", async () => {
+      _map.addSource("toronto-neighbourhoods", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
 
-      map.resize();
-
-      map.addControl(
-        new mapboxgl.NavigationControl({ visualizePitch: true }),
-        "bottom-right"
-      );
-
-      map.on("move", () => {
-        setCoordinates({
-          lng: parseFloat(map.getCenter().lng.toFixed(3)),
-          lat: parseFloat(map.getCenter().lat.toFixed(3)),
-        });
-        setZoom(parseFloat(map.getZoom().toFixed(2)));
-      });
-
-      map.on("load", async () => {
-        map.addSource("toronto-neighbourhoods", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [],
-          },
-        });
-
-        map.addLayer({
-          id: "toronto-neighbourhoods",
-          type: "fill-extrusion",
-          source: "toronto-neighbourhoods",
-          paint: {
-            "fill-extrusion-color": [
-              "interpolate",
-              ["linear"],
-              [
-                "/",
-                ["get", "covidActiveCases"],
-                ["/", ["get", "shapeArea"], 1000000],
-              ],
-              0,
-              "black",
-              1,
-              "yellow",
-              20,
-              "orange",
-              50,
-              "red",
+      _map.addLayer({
+        id: "toronto-neighbourhoods",
+        type: "fill-extrusion",
+        source: "toronto-neighbourhoods",
+        paint: {
+          "fill-extrusion-color": [
+            "interpolate",
+            ["linear"],
+            [
+              "/",
+              ["get", "covidActiveCases"],
+              ["/", ["get", "shapeArea"], 1000000],
             ],
-            "fill-extrusion-height": ["get", "covidActiveCases"],
-            "fill-extrusion-base": 0,
-            "fill-extrusion-opacity": 0.5,
-          },
-          filter: ["==", "$type", "Polygon"],
-        });
+            0,
+            "black",
+            1,
+            "yellow",
+            20,
+            "orange",
+            50,
+            "red",
+          ],
+          "fill-extrusion-height": ["get", "covidActiveCases"],
+          "fill-extrusion-base": 0,
+          "fill-extrusion-opacity": 0.5,
+        },
+        filter: ["==", "$type", "Polygon"],
+      });
 
-        map.addLayer({
-          id: "neighbourhood-labels",
-          type: "symbol",
-          source: "toronto-neighbourhoods",
-          layout: {
-            "text-field": ["get", "name"],
-            "text-variable-anchor": ["top", "bottom", "left", "right"],
-            "text-radial-offset": 0.5,
-            "text-justify": "center",
-            "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10, 15, 20],
-          },
-          paint: {
-            "text-color": "#ffffff",
-            "text-halo-width": 1,
-            "text-halo-color": "#222222",
-            "text-halo-blur": 1,
-          },
-        });
+      _map.addLayer({
+        id: "neighbourhood-labels",
+        type: "symbol",
+        source: "toronto-neighbourhoods",
+        layout: {
+          "text-field": ["get", "name"],
+          "text-variable-anchor": ["top", "bottom", "left", "right"],
+          "text-radial-offset": 0.5,
+          "text-justify": "center",
+          "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10, 15, 20],
+        },
+        paint: {
+          "text-color": "#ffffff",
+          "text-halo-width": 1,
+          "text-halo-color": "#222222",
+          "text-halo-blur": 1,
+        },
+      });
 
-        const { id: nId, total: nTotal } = await fetchTorontoPackageShow(`{
+      const { id: nId, total: nTotal } = await fetchTorontoPackageShow(`{
             result(id: "${NEIGHBOURHOODS_ID}") {
               title
               resources {
@@ -153,21 +146,21 @@ const Map: React.FC = () => {
               }
             }
           }`).then((response) => {
-          const { resources } = response;
-          const resource = resources.find((r) => r.datastoreActive);
-          if (resource) {
-            setReportedDate(resource.lastModified);
-            return { id: resource.id, total: resource.total };
-          } else {
-            return { id: undefined, total: undefined };
-          }
-        });
+        const { resources } = response;
+        const resource = resources.find((r) => r.datastoreActive);
+        if (resource) {
+          setReportedDate(resource.lastModified);
+          return { id: resource.id, total: resource.total };
+        } else {
+          return { id: undefined, total: undefined };
+        }
+      });
 
-        if (nId && nTotal) {
-          const totalPages = nTotal / 100;
-          for (let page = 0; page < totalPages; page++) {
-            for (const record of (
-              await fetchTorontoDataStore(`{
+      if (nId && nTotal) {
+        const totalPages = nTotal / 100;
+        for (let page = 0; page < totalPages; page++) {
+          for (const record of (
+            await fetchTorontoDataStore(`{
               result(id: "${nId}", page: ${page}) {
                 neighbourhoodsRecords {
                   geometry
@@ -177,26 +170,26 @@ const Map: React.FC = () => {
                 }
               }
             }`)
-            ).neighbourhoodsRecords as NeighbourhoodRecord[]) {
-              torontoNeighbourhoods["features"].push({
-                type: "Feature",
-                geometry: JSON.parse(record.geometry) as Geometry,
-                properties: {
-                  id: record.areaId,
-                  name: record.areaName.split(/ \((\d+)\)/)[0],
-                  shapeArea: record.shapeArea,
-                  covidActiveCases: 0,
-                  covid: [],
-                },
-              });
-            }
+          ).neighbourhoodsRecords as NeighbourhoodRecord[]) {
+            torontoNeighbourhoods["features"].push({
+              type: "Feature",
+              geometry: JSON.parse(record.geometry) as Geometry,
+              properties: {
+                id: record.areaId,
+                name: record.areaName.split(/ \((\d+)\)/)[0],
+                shapeArea: record.shapeArea,
+                covidActiveCases: 0,
+                covid: [],
+              },
+            });
           }
-          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
-            torontoNeighbourhoods
-          );
         }
+        (_map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+          torontoNeighbourhoods
+        );
+      }
 
-        const { id: cId, total: cTotal } = await fetchTorontoPackageShow(`{
+      const { id: cId, total: cTotal } = await fetchTorontoPackageShow(`{
             result(id: "${COVID_ID}") {
               title
               resources {
@@ -208,19 +201,19 @@ const Map: React.FC = () => {
               }
             }
           }`).then(({ resources }) => {
-          const resource = resources.find((r) => r.datastoreActive);
-          if (resource) {
-            setReportedDate(resource.lastModified);
-            return { id: resource.id, total: resource.total };
-          } else {
-            return { id: undefined, total: undefined };
-          }
-        });
-        if (cId && cTotal) {
-          const totalPages = cTotal / 100;
-          for (let page = 0; page < totalPages; page++) {
-            for (const record of (
-              await fetchTorontoDataStore(`{
+        const resource = resources.find((r) => r.datastoreActive);
+        if (resource) {
+          setReportedDate(resource.lastModified);
+          return { id: resource.id, total: resource.total };
+        } else {
+          return { id: undefined, total: undefined };
+        }
+      });
+      if (cId && cTotal) {
+        const totalPages = cTotal / 100;
+        for (let page = 0; page < totalPages; page++) {
+          for (const record of (
+            await fetchTorontoDataStore(`{
               result(id: "${cId}", page:${page}) {
                 covidRecords {
                   neighbourhoodName
@@ -229,62 +222,47 @@ const Map: React.FC = () => {
                 }
               }
             }`)
-            ).covidRecords as CovidRecord[]) {
-              torontoNeighbourhoods.features
-                .find((el) => el.properties?.name === record.neighbourhoodName)
-                ?.properties?.covid.push(record);
+          ).covidRecords as CovidRecord[]) {
+            torontoNeighbourhoods.features
+              .find((el) => el.properties?.name === record.neighbourhoodName)
+              ?.properties?.covid.push(record);
 
-              incrementKeyNumber(
-                torontoNeighbourhoods.features.find(
-                  (el) => el.properties?.name === record.neighbourhoodName
-                )?.properties,
-                "covidActiveCases"
-              );
-            }
-            if (page % 5 === 0) {
-              // const covidValues: number[] = torontoNeighbourhoods.features.map(
-              //   (f) => {
-              //     const covidActiveCases = f.properties?.covid.filter(
-              //       (e: CovidRecord) => e.outcome === "ACTIVE"
-              //     ).length;
-
-              //     if (f.properties) {
-              //       f.properties.covidActiveCases = covidActiveCases;
-              //     }
-
-              //     return covidActiveCases;
-              //   }
-              // );
-              // max = Math.max(...covidValues);
-
-              (map.getSource(
-                "toronto-neighbourhoods"
-              ) as GeoJSONSource).setData(torontoNeighbourhoods);
-            }
+            incrementKeyNumber(
+              torontoNeighbourhoods.features.find(
+                (el) => el.properties?.name === record.neighbourhoodName
+              )?.properties,
+              "covidActiveCases"
+            );
           }
-          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
-            torontoNeighbourhoods
-          );
-
-          setIsDataLoaded(true);
+          if (page % 5 === 0) {
+            (_map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+              torontoNeighbourhoods
+            );
+          }
         }
-      });
-
-      map.on("click", "toronto-neighbourhoods", (ev) => {
-        const coordinates = ev.features
-          ? (polylabel((ev.features[0].geometry as Polygon).coordinates).slice(
-              0,
-              2
-            ) as LngLatLike)
-          : (ev.lngLat.toArray() as LngLatLike);
-
-        const descriptionElements: Array<CovidRecord> = JSON.parse(
-          ev.features ? ev.features[0].properties?.covid : "[]"
+        (_map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+          torontoNeighbourhoods
         );
 
-        const description = `<h5>${
-          ev.features ? ev.features[0].properties?.name : "No Name"
-        }</h5>
+        setIsDataLoaded(true);
+      }
+    });
+
+    _map.on("click", "toronto-neighbourhoods", (ev) => {
+      const coordinates = ev.features
+        ? (polylabel((ev.features[0].geometry as Polygon).coordinates).slice(
+            0,
+            2
+          ) as LngLatLike)
+        : (ev.lngLat.toArray() as LngLatLike);
+
+      const descriptionElements: Array<CovidRecord> = JSON.parse(
+        ev.features ? ev.features[0].properties?.covid : "[]"
+      );
+
+      const description = `<h5>${
+        ev.features ? ev.features[0].properties?.name : "No Name"
+      }</h5>
         <p>Total Cases: ${descriptionElements.length}</p>
         <p>Active Cases: ${
           descriptionElements.filter((e) => e.outcome === "ACTIVE").length
@@ -294,30 +272,29 @@ const Map: React.FC = () => {
             .length
         }</p>`;
 
-        new mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setHTML(description)
-          .addTo(map);
-      });
-    })();
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(_map);
+    });
 
     return () => {
-      // map.remove();
+      _map.remove();
     };
     // eslint-disable-next-line
   }, []);
 
-  // const centerMap = (map: mapboxgl.Map) => {
-  //   if (map) map.flyTo({ center: INITIAL_COORDINATES });
-  // };
+  const centerMap = () => {
+    if (map) map.flyTo({ center: INITIAL_COORDINATES });
+  };
 
   return (
     <div className="map-container">
-      <div className="left-sidebar">
-        <div>
+      <div className="center-sidebar">
+        {/* <div>
           Longitude: {coordinates.lng} | Latitude: {coordinates.lat} | Zoom:{" "}
           {zoom}
-        </div>
+        </div> */}
         <div>Last Modified: {reportedDate}</div>
       </div>
       <div className="right-sidebar">
@@ -333,13 +310,13 @@ const Map: React.FC = () => {
             <span className="sr-only">Loading...</span>
           </Button>
         )}
-        {/* <Button
+        <Button
           onClick={() => {
-            centerMap(map);
+            centerMap();
           }}
         >
           {new Emoji("🏡", "Center").render()}
-        </Button> */}
+        </Button>
       </div>
       <div ref={ref} className="map" />
     </div>

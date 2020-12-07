@@ -14,27 +14,30 @@
     z-index: 11;
 }
 
-.full-screen-advice {
-    background-color: rgba($color: #000000, $alpha: 0.4);
+.prevent-touch {
     position: absolute;
     top: 0;
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 2;
     cursor: pointer;
     user-select: none;
-    font-size: large;
-    font-weight: bold;
-    color: black;
 
     & > p {
         border-radius: 5px;;
         background-color: whitesmoke;
         padding: 5px 10px;
     }
+}
+
+.advice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($color: #000000, $alpha: 0.4);
+    font-size: large;
+    font-weight: bold;
+    color: black;
 }
 
 .return-button {

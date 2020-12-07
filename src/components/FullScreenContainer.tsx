@@ -21,15 +21,19 @@ const FullScreenContainer: React.FC<{ children: ReactNode }> = (props) => {
         data-testid="FullScreenContainer"
         onMouseEnter={() => setIsMouseIn(true)}
         onMouseLeave={() => setIsMouseIn(false)}
+        onTouchStart={() => setIsMouseIn(true)}
+        onTouchEnd={() => setIsMouseIn(false)}
         onClick={() => {
           if (!isFullScreen) setIsFullScreen(true);
         }}
       >
         {props.children}
         {isShowHint ? (
-          <div className="full-screen-advice">
+          <div className="prevent-touch advice">
             <p>Click to full screen mode.</p>
           </div>
+        ) : !isFullScreen ? (
+          <div className="prevent-touch"></div>
         ) : null}
         {isFullScreen ? (
           <Button
