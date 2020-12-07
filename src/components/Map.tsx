@@ -19,6 +19,7 @@ import {
   PackageShow,
 } from "../interfaces/toronto";
 import Emoji from "./Emoji";
+import { changeSizeStore } from "./actions/FullScreenContainer";
 
 const NEIGHBOURHOODS_ID = "4def3f65-2a65-4a4f-83c4-b2a4aed72d46";
 const COVID_ID = "64b54586-6180-4485-83eb-81e8fae3b8fe";
@@ -48,9 +49,10 @@ const Map: React.FC = () => {
     type: "FeatureCollection",
     features: [],
   };
-  useEffect(() => {
+
+  const changeSizeSuscription = changeSizeStore.subscribe(() => {
     if (map) map.resize();
-  }, [map]);
+  });
 
   useEffect(() => {
     const _map = new mapboxgl.Map({
@@ -279,7 +281,8 @@ const Map: React.FC = () => {
     });
 
     return () => {
-      _map.remove();
+      // _map.remove();  Needs to cancel or something with the request
+      changeSizeSuscription();
     };
     // eslint-disable-next-line
   }, []);

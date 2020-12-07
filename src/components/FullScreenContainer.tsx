@@ -1,14 +1,27 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./FullScreenContainer.scss";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Emoji from "./Emoji";
+import {
+  fullScreenSize,
+  normalSize,
+  changeSizeStore,
+} from "./actions/FullScreenContainer";
 
 const FullScreenContainer: React.FC<{ children: ReactNode }> = (props) => {
   const [isMouseIn, setIsMouseIn] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const isShowHint = isMouseIn && !isFullScreen;
+
+  useEffect(() => {
+    if (isFullScreen) {
+      changeSizeStore.dispatch(fullScreenSize());
+    } else {
+      changeSizeStore.dispatch(normalSize());
+    }
+  }, [isFullScreen]);
 
   return (
     <>
