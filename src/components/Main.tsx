@@ -1,8 +1,9 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Switch, Route, HashRouter } from "react-router-dom";
 import "./Main.scss";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/src/ScrollTrigger";
+import { TextPlugin } from "gsap/src/TextPlugin";
 
 import Loader from "./Loader";
 import Page404 from "./Page404";
@@ -12,8 +13,9 @@ import Content from "./Content";
 import Map from "./Map";
 import Footer from "./Footer";
 
-import pjson from "../../package.json";
 import FullScreenContainer from "./FullScreenContainer";
+
+import pjson from "../../package.json";
 
 console.log(`Version: ${pjson.version}`);
 
@@ -44,7 +46,7 @@ function Body() {
   }, [fixed]);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="App">
         <Header />
         <div className="body">
@@ -75,13 +77,14 @@ function Body() {
           <Footer />
         </div>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
 // here app catches the suspense from page in case translations are not yet loaded
 const Main: React.FC = (): JSX.Element => {
   gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(TextPlugin);
 
   return (
     <Suspense

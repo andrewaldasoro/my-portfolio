@@ -1,25 +1,25 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./FullScreenContainer.scss";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Emoji from "./Emoji";
-import {
-  fullScreenSize,
-  normalSize,
-  changeSizeStore,
-} from "./actions/FullScreenContainer";
 
-const FullScreenContainer: React.FC<{ children: ReactNode }> = (props) => {
+const FullScreenContainer: React.FC<{
+  children: ReactElement;
+}> = (props) => {
   const [isMouseIn, setIsMouseIn] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [changeSize, setChangeSize] = useState(false);
   const isShowHint = isMouseIn && !isFullScreen;
 
   useEffect(() => {
     if (isFullScreen) {
-      changeSizeStore.dispatch(fullScreenSize());
+      // changeSizeStore.dispatch(fullScreenSize());
+      setChangeSize(true);
     } else {
-      changeSizeStore.dispatch(normalSize());
+      // changeSizeStore.dispatch(normalSize());
+      setChangeSize(false);
     }
   }, [isFullScreen]);
 
@@ -40,7 +40,8 @@ const FullScreenContainer: React.FC<{ children: ReactNode }> = (props) => {
           if (!isFullScreen) setIsFullScreen(true);
         }}
       >
-        {props.children}
+        {React.cloneElement(props.children, { changeSize })}
+
         {isShowHint ? (
           <div className="prevent-touch advice">
             <p>Click to full screen mode.</p>
@@ -64,7 +65,7 @@ const FullScreenContainer: React.FC<{ children: ReactNode }> = (props) => {
 };
 
 FullScreenContainer.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.element.isRequired,
 };
 
 export default FullScreenContainer;

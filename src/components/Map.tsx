@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
 import mapboxgl, { GeoJSONSource, LngLatLike } from "mapbox-gl";
 import {
   FeatureCollection,
@@ -8,10 +9,8 @@ import {
 } from "geojson";
 import "./Map.scss";
 import { getUrl } from "../services/api";
-// import Loader from "./Loader";
 import { Button, Spinner } from "react-bootstrap";
 import polylabel from "polylabel";
-import { useRef } from "react";
 import {
   CovidRecord,
   DataStore,
@@ -19,18 +18,58 @@ import {
   PackageShow,
 } from "../interfaces/toronto";
 import Emoji from "./Emoji";
-import { changeSizeStore } from "./actions/FullScreenContainer";
+import Loader from "./Loader";
+
+interface MapboxToken {
+  token: string;
+}
 
 const NEIGHBOURHOODS_ID = "4def3f65-2a65-4a4f-83c4-b2a4aed72d46";
 const COVID_ID = "64b54586-6180-4485-83eb-81e8fae3b8fe";
 
 const INITIAL_COORDINATES = { lng: -79.404, lat: 43.698 };
+const INITIAL_ZOOM = 10;
 
 let map: mapboxgl.Map;
 
-const Map: React.FC = () => {
+const Map: React.FC<{ changeSize?: boolean }> = (props) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch(getUrl("/mapbox-token/create"))
+      .then((result) => result.json() as Promise<MapboxToken>)
+      .then(({ token }) => {
+        mapboxgl.accessToken = token;
+        setIsLoaded(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error.message);
+        setIsLoaded(true);
+      });
+  }, []);
+
+  return isLoaded ? (
+    !error ? (
+      <MapInit {...props} />
+    ) : (
+      <div>{error}</div>
+    )
+  ) : (
+    <div>
+      <Loader />
+    </div>
+  );
+};
+
+Map.propTypes = {
+  changeSize: PropTypes.bool,
+};
+
+const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
   const [coordinates, setCoordinates] = useState(INITIAL_COORDINATES);
-  const [zoom, setZoom] = useState(10);
+  const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [reportedDate, setReportedDate] = useState("");
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -50,9 +89,13 @@ const Map: React.FC = () => {
     features: [],
   };
 
-  const changeSizeSuscription = changeSizeStore.subscribe(() => {
+  useEffect(() => {
     if (map) map.resize();
-  });
+  }, [props.changeSize]);
+
+  // const changeSizeSuscription = changeSizeStore.subscribe(() => {
+  //   if (map) map.resize();
+  // });
 
   useEffect(() => {
     const _map = new mapboxgl.Map({
@@ -280,15 +323,29 @@ const Map: React.FC = () => {
         .addTo(_map);
     });
 
+    _map.on("error", (ev) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((ev.error as any).status === 401) {
+        fetch(getUrl("/mapbox-token/create"))
+          .then((result) => result.json() as Promise<MapboxToken>)
+          .then(({ token }) => {
+            mapboxgl.accessToken = token;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    });
+
     return () => {
       // _map.remove();  Needs to cancel or something with the request
-      changeSizeSuscription();
+      // changeSizeSuscription();
     };
     // eslint-disable-next-line
   }, []);
 
   const centerMap = () => {
-    if (map) map.flyTo({ center: INITIAL_COORDINATES });
+    if (map) map.flyTo({ center: INITIAL_COORDINATES, zoom: INITIAL_ZOOM });
   };
 
   return (
@@ -324,6 +381,10 @@ const Map: React.FC = () => {
       <div ref={ref} className="map" />
     </div>
   );
+};
+
+MapInit.propTypes = {
+  changeSize: PropTypes.bool,
 };
 
 /**

@@ -6,9 +6,9 @@ import ReactLogo from "./ReactLogo";
 import githubLogo from "../assets/logo-github.svg";
 import linkedinLogo from "../assets/logo-linkedin.svg";
 import trelloLogo from "../assets/logo-trello.svg";
-import pjson from "../../package.json";
-import { mailto } from "../services/shared";
 import { Button } from "react-bootstrap";
+
+import pjson from "../../package.json";
 
 const Footer: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -16,6 +16,13 @@ const Footer: React.FC = () => {
     i18n.changeLanguage(lng);
     document.title = t("title") + " - Kev";
   };
+  const mailto: string =
+    "mailto:" +
+    pjson.author.email +
+    "?subject=" +
+    t("email.subject") +
+    "&body=" +
+    t("email.body");
 
   useEffect(() => {
     document.title = t("title") + " - Kev";
