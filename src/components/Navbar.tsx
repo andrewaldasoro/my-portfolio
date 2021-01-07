@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
   });
 
   return (
-    <div className="Navbar">
+    <div className="Navbar" data-testid="Navbar">
       <Link
         replace
         to={{ pathname: "/" }}

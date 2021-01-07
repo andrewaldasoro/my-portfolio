@@ -18,7 +18,11 @@ jest.mock("react-i18next", () => ({
 
 describe("<content />", () => {
   test("it should mount", () => {
-    render(<Content title="summary" />);
+    render(
+      <Content title="summary">
+        <div></div>
+      </Content>
+    );
 
     const content = screen.getByTestId("content");
 

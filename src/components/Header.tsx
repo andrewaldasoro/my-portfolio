@@ -19,21 +19,21 @@ const Header: React.FC = () => {
 
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    gsap.from(ref.current, {
-      scrollTrigger: {
-        trigger: ref.current as Element,
-        toggleActions: "play none none none",
-        start: "top top",
-        end: "+=1000",
-        pin: true,
-        onUpdate: (self) => {
-          setProgress(parseFloat(self.progress.toFixed(4)));
-        },
-        id: "header",
-      },
-    });
-  }, []);
+  // useEffect(() => {
+  //   gsap.from(ref.current, {
+  //     scrollTrigger: {
+  //       trigger: ref.current as Element,
+  //       toggleActions: "play none none none",
+  //       start: "top top",
+  //       end: "+=1000",
+  //       pin: true,
+  //       onUpdate: (self) => {
+  //         setProgress(parseFloat(self.progress.toFixed(4)));
+  //       },
+  //       id: "header",
+  //     },
+  //   });
+  // }, []);
 
   return (
     <div ref={ref} id="Header" className="Header" data-testid="Header">
