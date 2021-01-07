@@ -1,11 +1,13 @@
-$strong-blue: #031e36;
+@import "./../colors.scss";
+
+$background-color: $ultimate-gray;
 
 .Footer {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100wh;
-    background-color: $strong-blue;
+    background-color: $background-color;
 }
 
 address {
@@ -24,5 +26,5 @@ address {
 }
 
 .version {
-    color: $strong-blue;
+    color: $background-color;
 }

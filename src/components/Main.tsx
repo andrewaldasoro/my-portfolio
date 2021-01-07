@@ -1,95 +1,83 @@
-import React, { useEffect, useState, Suspense, useRef } from "react";
-import { Switch, Route, HashRouter } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
 import "./Main.scss";
 
 import Loader from "./Loader";
-import Page404 from "./Page404";
-import Header from "./Header";
-import Navbar from "./Navbar";
-import Content from "./Content";
-import Map from "./Map";
-import Footer from "./Footer";
-
-import FullScreenContainer from "./FullScreenContainer";
 
 import pjson from "../../package.json";
+import Navbar from "./Navbar";
+import {
+  HashRouter,
+  Redirect,
+  Route,
+  Switch,
+  useLocation,
+} from "react-router-dom";
+import Map from "./Map";
+import FullScreenContainer from "./FullScreenContainer";
+import Page404 from "./Page404";
+import changeColor from "../services/change-color";
+import { useTranslation } from "react-i18next";
 
 console.log(`Version: ${pjson.version}`);
+const Test = () => {
+  const { t } = useTranslation();
+  const style = {
+    fontSize: "8em",
+  };
+
+  useEffect(() => {
+    changeColor("#f5df4d", "#000000");
+  }, []);
+  return <div style={style}> {t("greeting")} 👋🌐</div>;
+};
+
+// function usePageViews() {
+//   const location = useLocation();
+//   useEffect(() => {
+//     ga.send(["pageview", location.pathname]);
+//   }, [location]);
+// }
 
 function Body() {
-  const [fixed, setFixed] = useState(false);
-  const navbarRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const isFixed = (_ev: Event) => {
-      const navbar = navbarRef.current;
-
-      if (navbar) {
-        const navbarTop = navbar.getBoundingClientRect().y;
-
-        if (navbarTop <= 0) {
-          setFixed(true);
-        } else {
-          setFixed(false);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", isFixed, true);
-
-    return () => {
-      window.removeEventListener("scroll", isFixed, true);
-    };
-  }, [fixed]);
+  // usePageViews();
+  const currentLocation = useLocation().pathname;
 
   return (
-    <HashRouter>
-      <div className="App">
-        <Header />
-        <div className="body">
-          <Navbar
-            ref={navbarRef}
-            style={{
-              position: fixed ? "fixed" : "absolute",
-            }}
-          />
-          <div className="content-container">
-            <Switch>
-              <Route exact path="/">
-                <Content title="summary" />
-                <Content title="skills" />
-                <Content title="employment" />
-                <Content title="education" />
-              </Route>
-              <Route path="/map">
-                <FullScreenContainer>
-                  <Map />
-                </FullScreenContainer>
-              </Route>
-              <Route path="*">
-                <Page404 />
-              </Route>
-            </Switch>
-          </div>
-          <Footer />
-        </div>
+    <>
+      <Navbar />
+      <div className="body-container">
+        <Switch>
+          <Route exact path="/">
+            <Test />
+          </Route>
+          <Route exact path="/(covid-)?map">
+            <FullScreenContainer>
+              <Map />
+            </FullScreenContainer>
+          </Route>
+          <Route exact path="/404" render={(props) => <Page404 {...props} />} />
+          <Route path="*">
+            <Redirect
+              to={{
+                pathname: "/404",
+                state: { referrer: currentLocation },
+              }}
+            />
+          </Route>
+        </Switch>
       </div>
-    </HashRouter>
+    </>
   );
 }
 
 // here app catches the suspense from page in case translations are not yet loaded
 const Main: React.FC = (): JSX.Element => {
   return (
-    <Suspense
-      fallback={
-        <div className="loading">
-          <Loader />
-        </div>
-      }
-    >
-      <Body />
-    </Suspense>
+    <HashRouter>
+      <Suspense fallback={<Loader />}>
+        <Body />
+      </Suspense>
+    </HashRouter>
   );
 };
 

@@ -1,10 +1,10 @@
 .Navbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    padding: 0;
-}
-
-.bg-blue {
-    background-color: #031e36;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 5px 15px;
+  user-select: none;
+  font-size: 4em;
+  z-index: 10;
 }

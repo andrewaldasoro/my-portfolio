@@ -1,6 +1,6 @@
 {
-    "title": "Résumé",
-    "greeting": "Bonjour, je m'appelle",
+    "emoji": "🥐",
+    "greeting": "Bonjour le monde",
     "english": "Anglais",
     "spanish": "Espagnol",
     "french": "Français",
@@ -9,22 +9,6 @@
         "trans": "Email",
         "subject": "[Votre entreprise] s'intéresse à vous",
         "body": "Bonjour Kev, \n Je suis très intéressé à avoir une entrevue avec vous, j'ai vu votre projet de CV. \n Cordialement, [Votre nom]."
-    },
-    "summary": {
-        "title": "Sommaire",
-        "content": "5 ans de développeur de logiciels avec une expérience en angular, nodejs. Toujours donner le meilleur de moi, en mettant tous mes efforts pour terminer les activités de la meilleure façon au meilleur moment."
-    },
-    "skills": {
-        "title": "Compétences",
-        "content": "Agile / SCRUM, POO, Motivé, Coopératif, Flexible, Ouvert d'esprit, Responsable, Soigné"
-    },
-    "employment": {
-        "title": "Emploi",
-        "content": "Août 2017 - Septembre 2020 | Thales Mexico - Développeur logiciel"
-    },
-    "education": {
-        "title": "Éducation",
-        "content": "Août 2014 - Juin 2018 | Université TecMilenio | Baccalauréat en informatique"
     },
     "projects": "Projets",
     "bottom": "Aller en bas",

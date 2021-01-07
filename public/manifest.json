@@ -1,6 +1,6 @@
 {
-  "short_name": "Kev's CV",
-  "name": "Kev's Curriculum Vitae",
+  "short_name": "Kev",
+  "name": "Kev's Portfolio",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#f5df4d",
+  "background_color": "#f5df4d"
 }

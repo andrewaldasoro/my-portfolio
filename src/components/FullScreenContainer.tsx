@@ -31,6 +31,7 @@ const FullScreenContainer: React.FC<{
       }
       <div
         className={isFullScreen ? "full-screen-mode" : "full-screen-container"}
+        style={{ backgroundColor: "var(--background-color)" }}
         data-testid="FullScreenContainer"
         onMouseEnter={() => setIsMouseIn(true)}
         onMouseLeave={() => setIsMouseIn(false)}

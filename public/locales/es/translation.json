@@ -1,6 +1,6 @@
 {
-    "title": "Curriculum Vitae",
-    "greeting": "Hola, me llamo",
+    "emoji": "🌮",
+    "greeting": "Hola Mundo",
     "english": "Inglés",
     "spanish": "Español",
     "franch": "Francés",
@@ -9,22 +9,6 @@
         "trans": "Correo electrónico",
         "subject": "Hola Kev,\n Estoy muy interesado en tener una entrevista contigo, vi el proyecto de tu CV.\n Saludos, [Tu nombre].",
         "body": "[Tu empresa] estamos interesados en ti"
-    },
-    "summary": {
-        "title": "Resumen",
-        "content": "5 años de experiencia como desarrollador de software con conocimiento en tecnologias como angular, NodeJS. Siempre dando lo mejor de mí, poniendo todo mi esfuerzo para terminar las actividades, en el mejor manera con la mejor calidad."
-    },
-    "skills": {
-        "title": "Habilidades",
-        "content": "Agile/SCRUM, OOP, Motivado, Trabajo en Equipo, Flexible, Open-minded, Responsable, Ordenado"
-    },
-    "employment": {
-        "title": "Empleo",
-        "content": "Agosto 2017 – Septiembre 2020 | Thales México - Desarrollador Software"
-    },
-    "education": {
-        "title": "Educación",
-        "content": "Agosto 2014 - Junio 2018 | Universidad Tecmilenio | Licenciatura en Administracion y Sistemas Computancionales"
     },
     "projects": "Proyectos",
     "bottom": "Ir Hasta Abajo",

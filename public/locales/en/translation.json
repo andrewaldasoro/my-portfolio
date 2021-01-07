@@ -1,6 +1,6 @@
 {
-    "title": "Resume",
-    "greeting": "Hello, my name is",
+    "emoji": "🍁",
+    "greeting": "Hello World",
     "english": "English",
     "spanish": "Spanish",
     "french": "French",
@@ -9,22 +9,6 @@
         "trans": "E-mail",
         "subject": "[Your company] is interested on you",
         "body": "Hi Kev,\n I am very interested in having an interview with you, I saw your resume project.\n Regards, [Your name]."
-    },
-    "summary": {
-        "title": "Summary",
-        "content": "5 years software developer with experience in angular, nodejs. Always giving the best of me, putting all my effort to finish activities in the best way on the best time."
-    },
-    "skills": {
-        "title": "Skills",
-        "content": "Agile/SCRUM, OOP, Motivated, Cooperative, Flexible, Open-minded, Responsible, Neat"
-    },
-    "employment": {
-        "title": "Employment",
-        "content": "August 2017 – September 2020 | Thales Mexico - Software Developer"
-    },
-    "education": {
-        "title": "Education",
-        "content": "August 2014 - June 2018 | TecMilenio University | Bachelor’s degree in Computer Science"
     },
     "projects": "Projects",
     "bottom": "Go to Bottom",

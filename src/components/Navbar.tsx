@@ -1,81 +1,70 @@
-import React, { CSSProperties } from "react";
-import { HashLink } from "react-router-hash-link";
-import { Nav, Navbar as BNavbar, NavDropdown } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import "./Navbar.scss";
-import Emoji from "./Emoji";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import { Link, useLocation } from "react-router-dom";
+import EmojiLink from "./EmojiLink";
+import { EmojiRE } from "./Emoji";
+import changeColor from "../services/change-color";
 
-const Navbar = React.forwardRef<HTMLDivElement, { style?: CSSProperties }>(
-  (props, ref) => {
-    const { t } = useTranslation();
+String.prototype.toSentenceCase = function () {
+  if (/\$|\.|\!|\*|\'|\(|\)|\,/.test(this.toString())) return this.toString();
+  const symbols = /\-|\_|\+/;
+  if (symbols.test(this.toString())) {
+    return this.split(symbols)
+      .map((s) => s.toSentenceCase())
+      .join(" ");
+  }
+
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+const Navbar: React.FC = () => {
+  const location = useLocation();
+
+  const routes = location.pathname.split("/").filter((route) => route !== "");
+
+  const pwd = routes.map((route, i) => {
+    const path = "/" + routes.slice(0, i + 1).join("/");
+
+    if (EmojiRE.test(route)) {
+      return (
+        <React.Fragment key={i}>
+          /{" "}
+          <Link to={{ pathname: path }} component={EmojiLink}>
+            {route}
+          </Link>{" "}
+        </React.Fragment>
+      );
+    }
 
     return (
-      <div style={{ position: "relative" }}>
-        <BNavbar
-          style={{ ...props.style, zIndex: 10 }}
-          collapseOnSelect
-          className="Navbar"
-          expand="lg"
-          bg="blue"
-          variant="dark"
-          data-testid="Navbar"
-        >
-          <BNavbar.Toggle aria-controls="responsive-navbar-nav" />
-          <BNavbar.Collapse id="responsive-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link
-                as={HashLink}
-                smooth
-                to={{ pathname: "/", hash: "#summary" }}
-              >
-                {t("summary.title")}
-              </Nav.Link>
-              <Nav.Link
-                as={HashLink}
-                smooth
-                to={{ pathname: "/", hash: "#skills" }}
-              >
-                {t("skills.title")}
-              </Nav.Link>
-              <Nav.Link
-                as={HashLink}
-                smooth
-                to={{ pathname: "/", hash: "#employment" }}
-              >
-                {t("employment.title")}
-              </Nav.Link>
-              <Nav.Link
-                as={HashLink}
-                smooth
-                to={{ pathname: "/", hash: "#education" }}
-              >
-                {t("education.title")}
-              </Nav.Link>
-              <NavDropdown title={t("projects")} id="collasible-nav-dropdown">
-                <NavDropdown.Item as={Link} to={{ pathname: "/map" }}>
-                  {t("map")} {new Emoji("😷", "COVID").render()}
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-            <Nav>
-              <Nav.Link eventKey={1} as={HashLink} to={{ hash: "#bottom" }}>
-                {new Emoji("👇", t("bottom")).render()}
-              </Nav.Link>
-            </Nav>
-          </BNavbar.Collapse>
-        </BNavbar>
-        <div ref={ref} className="Navbar"></div>
-      </div>
+      <React.Fragment key={i}>
+        /{" "}
+        <Link key={i} to={{ pathname: path }}>
+          {route.toSentenceCase()}
+        </Link>{" "}
+      </React.Fragment>
     );
-  }
-);
+  });
+
+  return (
+    <div className="Navbar">
+      <Link
+        replace
+        to={{ pathname: "/" }}
+        component={EmojiLink}
+        onClick={() => changeColor("#f5df4d", "#000000")}
+      >
+        🏡
+      </Link>{" "}
+      /{" "}
+      <Link replace to={{ pathname: "/" }} onClick={() => changeColor()}>
+        Kev
+      </Link>{" "}
+      {pwd}
+    </div>
+  );
+};
 
 Navbar.displayName = "Navbar";
-
-Navbar.propTypes = {
-  style: PropTypes.any,
-};
 
 export default Navbar;

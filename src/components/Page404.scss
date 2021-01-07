@@ -1,0 +1,13 @@
+.Page404 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  & > div {
+    font-size: 3em;
+    font-weight: lighter;
+  }
+  & > p {
+    font-size: 10em;
+    margin: 0;
+  }
+}

@@ -11,14 +11,11 @@ import "./Map.scss";
 import { getUrl } from "../services/api";
 import { Button, Spinner } from "react-bootstrap";
 import polylabel from "polylabel";
-import {
-  CovidRecord,
-  DataStore,
-  NeighbourhoodRecord,
-  PackageShow,
-} from "../interfaces/toronto";
+import { CovidRecord, NeighbourhoodRecord } from "../interfaces/toronto";
 import Emoji from "./Emoji";
 import Loader from "./Loader";
+
+import { getDataStore, getPackageShow } from "../services/toronto";
 
 interface MapboxToken {
   token: string;
@@ -52,17 +49,14 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
         setIsLoaded(true);
       });
   }, []);
-
   return isLoaded ? (
     !error ? (
       <MapInit {...props} />
     ) : (
-      <div>{error}</div>
+      <> {error} </>
     )
   ) : (
-    <div>
-      <Loader />
-    </div>
+    <Loader />
   );
 };
 
@@ -96,10 +90,6 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
   useEffect(() => {
     if (map) map.resize();
   }, [props.changeSize]);
-
-  // const changeSizeSuscription = changeSizeStore.subscribe(() => {
-  //   if (map) map.resize();
-  // });
 
   useEffect(() => {
     const initializeMap = ({ setMap, mapEl }: InitializeMapTypes) => {
@@ -184,42 +174,20 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
           },
         });
 
-        const { id: nId, total: nTotal } = await fetchTorontoPackageShow(`{
-            result(id: "${NEIGHBOURHOODS_ID}") {
-              title
-              resources {
-                datastoreActive
-                id
-                format
-                total
-              }
-            }
-          }`).then((response) => {
+        const nId = await getPackageShow(NEIGHBOURHOODS_ID).then((response) => {
           const { resources } = response;
           const resource = resources.find((r) => r.datastoreActive);
           if (resource) {
-            setReportedDate(resource.lastModified);
-            return { id: resource.id, total: resource.total };
-          } else {
-            return { id: undefined, total: undefined };
+            return resource.id;
           }
+          return undefined;
         });
 
-        if (nId && nTotal) {
-          const totalPages = nTotal / 100;
-          for (let page = 0; page < totalPages; page++) {
-            for (const record of (
-              await fetchTorontoDataStore(`{
-              result(id: "${nId}", page: ${page}) {
-                neighbourhoodsRecords {
-                  geometry
-                  areaId
-                  areaName
-                  shapeArea
-                }
-              }
-            }`)
-            ).neighbourhoodsRecords as NeighbourhoodRecord[]) {
+        if (nId) {
+          const totalPages = (await getDataStore(nId)).total;
+          for (let page = 0; page < totalPages; page += 100) {
+            for (const record of (await getDataStore(nId, page))
+              .records as NeighbourhoodRecord[]) {
               torontoNeighbourhoods["features"].push({
                 type: "Feature",
                 geometry: JSON.parse(record.geometry) as Geometry,
@@ -233,45 +201,26 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
               });
             }
           }
-          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
-            torontoNeighbourhoods
-          );
+          try {
+            (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+              torontoNeighbourhoods
+            );
+          } catch (error) {}
         }
 
-        const { id: cId, total: cTotal } = await fetchTorontoPackageShow(`{
-            result(id: "${COVID_ID}") {
-              title
-              resources {
-                datastoreActive
-                id
-                format
-                lastModified
-                total
-              }
-            }
-          }`).then(({ resources }) => {
+        const cId = await getPackageShow(COVID_ID).then(({ resources }) => {
           const resource = resources.find((r) => r.datastoreActive);
           if (resource) {
             setReportedDate(resource.lastModified);
-            return { id: resource.id, total: resource.total };
-          } else {
-            return { id: undefined, total: undefined };
+            return resource.id;
           }
+          return undefined;
         });
-        if (cId && cTotal) {
-          const totalPages = cTotal / 100;
-          for (let page = 0; page < totalPages; page++) {
-            for (const record of (
-              await fetchTorontoDataStore(`{
-              result(id: "${cId}", page:${page}) {
-                covidRecords {
-                  neighbourhoodName
-                  outcome
-                  currentlyHospitalized
-                }
-              }
-            }`)
-            ).covidRecords as CovidRecord[]) {
+        if (cId) {
+          const totalPages = (await getDataStore(cId)).total;
+          for (let page = 0; page < totalPages; page += 100) {
+            for await (const record of (await getDataStore(cId, page))
+              .records as CovidRecord[]) {
               torontoNeighbourhoods.features
                 .find((el) => el.properties?.name === record.neighbourhoodName)
                 ?.properties?.covid.push(record);
@@ -284,14 +233,20 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
               );
             }
             if (page % 5 === 0) {
-              (map.getSource(
-                "toronto-neighbourhoods"
-              ) as GeoJSONSource).setData(torontoNeighbourhoods);
+              try {
+                (map.getSource(
+                  "toronto-neighbourhoods"
+                ) as GeoJSONSource).setData(torontoNeighbourhoods);
+              } catch (error) {
+                break;
+              }
             }
           }
-          (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
-            torontoNeighbourhoods
-          );
+          try {
+            (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
+              torontoNeighbourhoods
+            );
+          } catch (error) {}
 
           setIsDataLoaded(true);
         }
@@ -391,43 +346,6 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
 MapInit.propTypes = {
   changeSize: PropTypes.bool,
 };
-
-/**
- *
- * @param path Fetch path
- * @type string
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fetchOr = (path: string, query: string) =>
-  fetch(getUrl(path), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({ query }),
-  })
-    .then((result) => result.json())
-    .then((result) => result.data.result)
-    .catch((err) => {
-      console.error(err);
-    });
-
-/**
- *
- * @param query GraphQL query
- * @type string
- */
-const fetchTorontoPackageShow = (query: string): Promise<PackageShow> =>
-  fetchOr("/toronto/package-show", query);
-
-/**
- *
- * @param query GraphQL query
- * @type string
- */
-const fetchTorontoDataStore = (query: string): Promise<DataStore> =>
-  fetchOr("/toronto/datastore", query);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function incrementKeyNumber(obj: any, key: string): void {
