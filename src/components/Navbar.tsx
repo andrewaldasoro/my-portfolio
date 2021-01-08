@@ -5,6 +5,13 @@ import EmojiLink from "./EmojiLink";
 import { EmojiRE } from "./Emoji";
 import changeColor from "../services/change-color";
 
+declare global {
+  interface String {
+    /** Converts characters in a string sentence like. */
+    toSentenceCase: () => string;
+  }
+}
+
 String.prototype.toSentenceCase = function () {
   if (/\$|\.|\!|\*|\'|\(|\)|\,/.test(this.toString())) return this.toString();
   const symbols = /\-|\_|\+/;
