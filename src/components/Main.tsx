@@ -17,6 +17,7 @@ import FullScreenContainer from "./FullScreenContainer";
 import Page404 from "./Page404";
 import changeColor from "../services/change-color";
 import { useTranslation } from "react-i18next";
+import ChangeColorButton from "./ChangeColorButton";
 
 console.log(`Version: ${pjson.version}`);
 const Test = () => {
@@ -66,6 +67,7 @@ function Body() {
           </Route>
         </Switch>
       </div>
+      <ChangeColorButton />
     </>
   );
 }

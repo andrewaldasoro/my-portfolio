@@ -3,7 +3,7 @@ import "./Navbar.scss";
 import { Link, useLocation } from "react-router-dom";
 import EmojiLink from "./EmojiLink";
 import { EmojiRE } from "./Emoji";
-import changeColor from "../services/change-color";
+import Input from "./Input";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -36,19 +36,14 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="Navbar" data-testid="Navbar">
-      <Link
-        replace
-        to={{ pathname: "/" }}
-        component={EmojiLink}
-        onClick={() => changeColor("#f5df4d", "#000000")}
-      >
+      <Link replace to={{ pathname: "/" }} component={EmojiLink}>
         🏡
       </Link>{" "}
       /{" "}
-      <Link replace to={{ pathname: "/" }} onClick={() => changeColor()}>
+      <Link replace to={{ pathname: "/" }}>
         Kev
       </Link>{" "}
-      {pwd}
+      {pwd} / <Input className="hidden bottom-line" maxLength={50} />
     </div>
   );
 };

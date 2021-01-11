@@ -1,0 +1,21 @@
+.input {
+  border: 0;
+  margin: 0;
+  padding: 0 5px;
+  width: 8em;
+  max-width: 100%;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  outline: none;
+}
+
+.bottom-line {
+  border-bottom: 2px solid transparent;
+
+  &:hover {
+    border-bottom: 2px solid var(--color);
+  }
+
+  &:focus {
+    border-bottom: 2px solid var(--color);
+  }
+}

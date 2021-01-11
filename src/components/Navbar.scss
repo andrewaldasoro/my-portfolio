@@ -1,10 +1,17 @@
 .Navbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   position: relative;
   top: 0;
   left: 0;
   width: 100%;
   padding: 5px 15px;
   user-select: none;
-  font-size: 4em;
+  font-size: 2em;
   z-index: 10;
+}
+
+.Navbar a {
+  padding: 0 5px;
 }
