@@ -8,7 +8,7 @@
     "email": "andrewaldasoro@gmail.com"
   },
   "name": "cv-frontend",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.2",
