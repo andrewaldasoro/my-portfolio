@@ -40,6 +40,7 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
     fetch(getUrl("/mapbox-token/create"))
       .then((result) => result.json() as Promise<MapboxToken>)
       .then(({ token }) => {
+        console.log(token);
         mapboxgl.accessToken = token;
         setIsLoaded(true);
       })
@@ -49,6 +50,7 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
         setIsLoaded(true);
       });
   }, []);
+
   return isLoaded ? (
     !error ? (
       <MapInit {...props} />
@@ -174,14 +176,19 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
           },
         });
 
-        const nId = await getPackageShow(NEIGHBOURHOODS_ID).then((response) => {
-          const { resources } = response;
-          const resource = resources.find((r) => r.datastoreActive);
-          if (resource) {
-            return resource.id;
-          }
-          return undefined;
-        });
+        const nId = await getPackageShow(NEIGHBOURHOODS_ID)
+          .then((response) => {
+            console.log(response);
+            const { resources } = response;
+            const resource = resources.find((r) => r.datastoreActive);
+            if (resource) {
+              return resource.id;
+            }
+            return undefined;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
 
         if (nId) {
           const totalPages = (await getDataStore(nId)).total;
@@ -205,7 +212,9 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
             (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
               torontoNeighbourhoods
             );
-          } catch (error) {}
+          } catch (error) {
+            console.error(error);
+          }
         }
 
         const cId = await getPackageShow(COVID_ID).then(({ resources }) => {
@@ -238,6 +247,7 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
                   "toronto-neighbourhoods"
                 ) as GeoJSONSource).setData(torontoNeighbourhoods);
               } catch (error) {
+                console.error(error);
                 break;
               }
             }
@@ -246,7 +256,9 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
             (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
               torontoNeighbourhoods
             );
-          } catch (error) {}
+          } catch (error) {
+            console.error(error);
+          }
 
           setIsDataLoaded(true);
         }
@@ -347,6 +359,8 @@ MapInit.propTypes = {
   changeSize: PropTypes.bool,
 };
 
+export default Map;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function incrementKeyNumber(obj: any, key: string): void {
   if (obj) {
@@ -355,5 +369,3 @@ function incrementKeyNumber(obj: any, key: string): void {
     }
   }
 }
-
-export default Map;

@@ -5,25 +5,6 @@ import EmojiLink from "./EmojiLink";
 import { EmojiRE } from "./Emoji";
 import changeColor from "../services/change-color";
 
-declare global {
-  interface String {
-    /** Converts characters in a string sentence like. */
-    toSentenceCase: () => string;
-  }
-}
-
-String.prototype.toSentenceCase = function () {
-  if (/\$|\.|\!|\*|\'|\(|\)|\,/.test(this.toString())) return this.toString();
-  const symbols = /\-|\_|\+/;
-  if (symbols.test(this.toString())) {
-    return this.split(symbols)
-      .map((s) => s.toSentenceCase())
-      .join(" ");
-  }
-
-  return this.charAt(0).toUpperCase() + this.slice(1);
-};
-
 const Navbar: React.FC = () => {
   const location = useLocation();
 
@@ -75,3 +56,16 @@ const Navbar: React.FC = () => {
 Navbar.displayName = "Navbar";
 
 export default Navbar;
+
+// Custom prototypes
+String.prototype.toSentenceCase = function () {
+  if (/\$|\.|\!|\*|\'|\(|\)|\,/.test(this.toString())) return this.toString();
+  const symbols = /\-|\_|\+/;
+  if (symbols.test(this.toString())) {
+    return this.split(symbols)
+      .map((s) => s.toSentenceCase())
+      .join(" ");
+  }
+
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
