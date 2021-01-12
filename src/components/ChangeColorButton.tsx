@@ -5,7 +5,7 @@ import changeColor from "../services/change-color";
 const ChangeColorButton: React.FC = () => {
   const style: CSSProperties = {
     position: "fixed",
-    bottom: "10px",
+    top: "10px",
     right: "10px",
     color: "var(--color)",
     backgroundColor: "var(--background-color)",
