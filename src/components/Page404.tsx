@@ -13,6 +13,10 @@ const Page404: React.FC<RouteComponentProps<any, any, any>> = (props) => {
       setPathname(props.location.state.referrer);
     }
     changeColor("#ff6347", "#000000");
+
+    return () => {
+      changeColor();
+    };
   }, []);
 
   return (

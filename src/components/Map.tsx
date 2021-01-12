@@ -16,6 +16,7 @@ import Emoji from "./Emoji";
 import Loader from "./Loader";
 
 import { getDataStore, getPackageShow } from "../services/toronto";
+import changeColor from "../services/change-color";
 
 interface MapboxToken {
   token: string;
@@ -37,6 +38,7 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    changeColor("#ee664d", "#6397a8");
     fetch(getUrl("/mapbox-token/create"))
       .then((result) => result.json() as Promise<MapboxToken>)
       .then(({ token }) => {

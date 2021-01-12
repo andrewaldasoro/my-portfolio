@@ -60,7 +60,7 @@ function Body() {
           <Route path="*">
             <Redirect
               to={{
-                pathname: "/404",
+                pathname: "/404/",
                 state: { referrer: currentLocation },
               }}
             />
