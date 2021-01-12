@@ -64,6 +64,8 @@ export interface DataStore {
   resourceId: string;
   fields: Array<Field>;
   recordsFormat: string;
+  neighbourhoodsRecords?: Array<NeighbourhoodRecord>;
+  covidRecords?: Array<CovidRecord>;
   records?: Array<NeighbourhoodRecord | CovidRecord>;
   links: Links;
   total: number;

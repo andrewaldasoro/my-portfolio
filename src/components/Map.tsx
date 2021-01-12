@@ -11,11 +11,14 @@ import "./Map.scss";
 import { getUrl } from "../services/api";
 import { Button, Spinner } from "react-bootstrap";
 import polylabel from "polylabel";
-import { CovidRecord, NeighbourhoodRecord } from "../interfaces/toronto";
+import {
+  CovidRecord,
+  DataStore,
+  NeighbourhoodRecord,
+  PackageShow,
+} from "../interfaces/toronto";
 import Emoji from "./Emoji";
 import Loader from "./Loader";
-
-import { getDataStore, getPackageShow } from "../services/toronto";
 import changeColor from "../services/change-color";
 
 interface MapboxToken {
@@ -39,10 +42,10 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
 
   useEffect(() => {
     changeColor("#ee664d", "#6397a8");
+
     fetch(getUrl("/mapbox-token/create"))
       .then((result) => result.json() as Promise<MapboxToken>)
       .then(({ token }) => {
-        console.log(token);
         mapboxgl.accessToken = token;
         setIsLoaded(true);
       })
@@ -53,15 +56,7 @@ const Map: React.FC<{ changeSize?: boolean }> = (props) => {
       });
   }, []);
 
-  return isLoaded ? (
-    !error ? (
-      <MapInit {...props} />
-    ) : (
-      <> {error} </>
-    )
-  ) : (
-    <Loader />
-  );
+  return isLoaded ? !error ? <MapInit {...props} /> : <>{error}</> : <Loader />;
 };
 
 Map.propTypes = {
@@ -94,6 +89,10 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
   useEffect(() => {
     if (map) map.resize();
   }, [props.changeSize]);
+
+  // const changeSizeSuscription = changeSizeStore.subscribe(() => {
+  //   if (map) map.resize();
+  // });
 
   useEffect(() => {
     const initializeMap = ({ setMap, mapEl }: InitializeMapTypes) => {
@@ -178,25 +177,47 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
           },
         });
 
-        const nId = await getPackageShow(NEIGHBOURHOODS_ID)
+        const { id: nId, total: nTotal } = await fetchTorontoPackageShow(`{
+            result(id: "${NEIGHBOURHOODS_ID}") {
+              title
+              resources {
+                datastoreActive
+                id
+                format
+                total
+              }
+            }
+          }`)
           .then((response) => {
-            console.log(response);
             const { resources } = response;
             const resource = resources.find((r) => r.datastoreActive);
             if (resource) {
-              return resource.id;
+              setReportedDate(resource.lastModified);
+              return { id: resource.id, total: resource.total };
+            } else {
+              return { id: undefined, total: undefined };
             }
-            return undefined;
           })
-          .catch((error) => {
-            console.error(error);
+          .catch((e) => {
+            console.error(e);
+            return { id: undefined, total: undefined };
           });
 
-        if (nId) {
-          const totalPages = (await getDataStore(nId)).total;
-          for (let page = 0; page < totalPages; page += 100) {
-            for (const record of (await getDataStore(nId, page))
-              .records as NeighbourhoodRecord[]) {
+        if (nId && nTotal) {
+          const totalPages = nTotal / 100;
+          for (let page = 0; page < totalPages; page++) {
+            for (const record of (
+              await fetchTorontoDataStore(`{
+              result(id: "${nId}", page: ${page}) {
+                neighbourhoodsRecords {
+                  geometry
+                  areaId
+                  areaName
+                  shapeArea
+                }
+              }
+            }`)
+            ).neighbourhoodsRecords as NeighbourhoodRecord[]) {
               torontoNeighbourhoods["features"].push({
                 type: "Feature",
                 geometry: JSON.parse(record.geometry) as Geometry,
@@ -214,24 +235,50 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
             (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
               torontoNeighbourhoods
             );
-          } catch (error) {
-            console.error(error);
+          } catch (e) {
+            console.error(e);
           }
         }
 
-        const cId = await getPackageShow(COVID_ID).then(({ resources }) => {
-          const resource = resources.find((r) => r.datastoreActive);
-          if (resource) {
-            setReportedDate(resource.lastModified);
-            return resource.id;
-          }
-          return undefined;
-        });
-        if (cId) {
-          const totalPages = (await getDataStore(cId)).total;
-          for (let page = 0; page < totalPages; page += 100) {
-            for await (const record of (await getDataStore(cId, page))
-              .records as CovidRecord[]) {
+        const { id: cId, total: cTotal } = await fetchTorontoPackageShow(`{
+            result(id: "${COVID_ID}") {
+              title
+              resources {
+                datastoreActive
+                id
+                format
+                lastModified
+                total
+              }
+            }
+          }`)
+          .then(({ resources }) => {
+            const resource = resources.find((r) => r.datastoreActive);
+            if (resource) {
+              setReportedDate(resource.lastModified);
+              return { id: resource.id, total: resource.total };
+            } else {
+              return { id: undefined, total: undefined };
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+            return { id: undefined, total: undefined };
+          });
+        if (cId && cTotal) {
+          const totalPages = cTotal / 100;
+          for (let page = 0; page < totalPages; page++) {
+            for (const record of (
+              await fetchTorontoDataStore(`{
+              result(id: "${cId}", page:${page}) {
+                covidRecords {
+                  neighbourhoodName
+                  outcome
+                  currentlyHospitalized
+                }
+              }
+            }`)
+            ).covidRecords as CovidRecord[]) {
               torontoNeighbourhoods.features
                 .find((el) => el.properties?.name === record.neighbourhoodName)
                 ?.properties?.covid.push(record);
@@ -248,8 +295,8 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
                 (map.getSource(
                   "toronto-neighbourhoods"
                 ) as GeoJSONSource).setData(torontoNeighbourhoods);
-              } catch (error) {
-                console.error(error);
+              } catch (e) {
+                console.error(e);
                 break;
               }
             }
@@ -258,8 +305,8 @@ const MapInit: React.FC<{ changeSize?: boolean }> = (props) => {
             (map.getSource("toronto-neighbourhoods") as GeoJSONSource).setData(
               torontoNeighbourhoods
             );
-          } catch (error) {
-            console.error(error);
+          } catch (e) {
+            console.error(e);
           }
 
           setIsDataLoaded(true);
@@ -361,7 +408,42 @@ MapInit.propTypes = {
   changeSize: PropTypes.bool,
 };
 
-export default Map;
+/**
+ *
+ * @param path Fetch path
+ * @type string
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const fetchOr = (path: string, query: string) =>
+  fetch(getUrl(path), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ query }),
+  })
+    .then((result) => result.json())
+    .then((result) => result.data.result)
+    .catch((err) => {
+      console.error(err);
+    });
+
+/**
+ *
+ * @param query GraphQL query
+ * @type string
+ */
+const fetchTorontoPackageShow = (query: string): Promise<PackageShow> =>
+  fetchOr("/toronto/package-show", query);
+
+/**
+ *
+ * @param query GraphQL query
+ * @type string
+ */
+const fetchTorontoDataStore = (query: string): Promise<DataStore> =>
+  fetchOr("/toronto/datastore", query);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function incrementKeyNumber(obj: any, key: string): void {
@@ -371,3 +453,5 @@ function incrementKeyNumber(obj: any, key: string): void {
     }
   }
 }
+
+export default Map;
