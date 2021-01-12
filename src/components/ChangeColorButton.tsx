@@ -10,7 +10,7 @@ const ChangeColorButton: React.FC = () => {
     color: "var(--color)",
     backgroundColor: "var(--background-color)",
     border: "2px solid var(--color)",
-    zIndex: 9,
+    zIndex: 10,
   };
   return (
     <Button style={style} onClick={() => changeColor()}>
