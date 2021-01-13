@@ -23,11 +23,11 @@ console.log(`Version: ${pjson.version}`);
 const Test = () => {
   const { t } = useTranslation();
   const style = {
-    fontSize: "8em",
+    fontSize: "4em",
   };
 
   useEffect(() => {
-    changeColor("#f5df4d", "#000000");
+    changeColor("#f5ce4d", "#000000");
   }, []);
   return <div style={style}> {t("greeting")} 👋🌐</div>;
 };
