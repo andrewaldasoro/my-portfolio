@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import EmojiLink from "./EmojiLink";
 import { EmojiRE } from "./Emoji";
 import Input from "./Input";
+import { StringUtils } from "../utils";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -28,7 +29,7 @@ const Navbar: React.FC = () => {
       <React.Fragment key={i}>
         /{" "}
         <Link key={i} to={{ pathname: path }}>
-          {route.toSentenceCase()}
+          {StringUtils.toSentenceCase(route)}
         </Link>{" "}
       </React.Fragment>
     );
@@ -51,16 +52,3 @@ const Navbar: React.FC = () => {
 Navbar.displayName = "Navbar";
 
 export default Navbar;
-
-// Custom prototypes
-String.prototype.toSentenceCase = function () {
-  if (/\$|\.|\!|\*|\'|\(|\)|\,/.test(this.toString())) return this.toString();
-  const symbols = /\-|\_|\+/;
-  if (symbols.test(this.toString())) {
-    return this.split(symbols)
-      .map((s) => s.toSentenceCase())
-      .join(" ");
-  }
-
-  return this.charAt(0).toUpperCase() + this.slice(1);
-};

@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     tags:
-      - v* 
+      - v*
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        
+
       - name: Build Production
         run: |
           yarn install --prod
@@ -42,7 +42,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: my-resume
+          ECR_REPOSITORY: my-portfolio
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -61,6 +61,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: frontend
-          cluster: my-resume-cluster
+          service: front-end
+          cluster: my-portfolio-cluster
           wait-for-service-stability: true

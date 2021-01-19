@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./FullScreenContainer.scss";
 import { useState } from "react";
-import { Button } from "react-bootstrap";
 import Emoji from "./Emoji";
 
 const FullScreenContainer: React.FC<{
@@ -51,14 +50,14 @@ const FullScreenContainer: React.FC<{
           <div className="prevent-touch"></div>
         ) : null}
         {isFullScreen ? (
-          <Button
+          <button
             onClick={() => {
               setIsFullScreen(false);
             }}
             className="return-button"
           >
             {new Emoji("◀", "Return").render()}
-          </Button>
+          </button>
         ) : null}
       </div>
     </>

@@ -1,4 +1,4 @@
-<h1 align="center">:memo:<tt>My Resume / CV</tt></h1>
+<h1 align="center">:memo:<tt>My Portfolio / CV</tt></h1>
 
 <blockquote align="center">A portafolio to show what I can do with React</blockquote>
 <p align="center">
@@ -7,7 +7,6 @@
 </p>
 
 [Demo Proyect](https://andrewaldasoro.me)
-
 
 # REACT
 
@@ -80,9 +79,8 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
-
 ### Help Links
 
 https://react.i18next.com/  
 https://webpack.js.org/guides/typescript/#importing-other-assets  
-https://microsoft.github.io/TypeSearch/  
+https://microsoft.github.io/TypeSearch/

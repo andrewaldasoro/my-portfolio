@@ -6,7 +6,6 @@ import ReactLogo from "./ReactLogo";
 import githubLogo from "../assets/logo-github.svg";
 import linkedinLogo from "../assets/logo-linkedin.svg";
 import trelloLogo from "../assets/logo-trello.svg";
-import { Button } from "react-bootstrap";
 
 import pjson from "../../package.json";
 
@@ -59,15 +58,15 @@ const Footer: React.FC = () => {
           </div>
         </address>
         <div className="language">
-          <Button type="button" onClick={() => changeLanguage("es")}>
+          <button type="button" onClick={() => changeLanguage("es")}>
             {new Emoji("ES 🌮", t("spanish")).render()}
-          </Button>
-          <Button type="button" onClick={() => changeLanguage("en")}>
+          </button>
+          <button type="button" onClick={() => changeLanguage("en")}>
             {new Emoji("EN 🍁", t("english")).render()}
-          </Button>
-          <Button type="button" onClick={() => changeLanguage("fr")}>
+          </button>
+          <button type="button" onClick={() => changeLanguage("fr")}>
             {new Emoji("FR 🥖", t("french")).render()}
-          </Button>
+          </button>
         </div>
         <div className="version">Version: {pjson.version}</div>
       </footer>

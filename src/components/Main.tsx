@@ -1,10 +1,6 @@
-import React, { Suspense, useEffect } from "react";
+import React, { CSSProperties, Suspense, useEffect } from "react";
 import "./Main.scss";
 
-import Loader from "./Loader";
-
-import pjson from "../../package.json";
-import Navbar from "./Navbar";
 import {
   HashRouter,
   Redirect,
@@ -12,49 +8,46 @@ import {
   Switch,
   useLocation,
 } from "react-router-dom";
-import Map from "./Map";
-import FullScreenContainer from "./FullScreenContainer";
-import Page404 from "./Page404";
-import changeColor from "../services/change-color";
 import { useTranslation } from "react-i18next";
-import ChangeColorButton from "./ChangeColorButton";
+
+import Loader from "./Loader";
+import Page404 from "./Page404";
+import Navbar from "./Navbar";
+
+import changeColor from "../services/change-color";
+import pjson from "../../package.json";
+// import ChangeColorButton from "./ChangeColorButton";
 
 console.log(`Version: ${pjson.version}`);
-const Test = () => {
+
+const Home = () => {
   const { t } = useTranslation();
-  const style = {
-    fontSize: "4em",
+  const style: CSSProperties = {
+    fontSize: "8em",
+    fontWeight: "bold",
   };
 
   useEffect(() => {
     changeColor("#f5ce4d", "#000000");
   }, []);
-  return <div style={style}> {t("greeting")} 👋🌐</div>;
+
+  return (
+    <div style={style}>
+      {t("greeting")} 👋{t("🌐")}
+    </div>
+  );
 };
 
-// function usePageViews() {
-//   const location = useLocation();
-//   useEffect(() => {
-//     ga.send(["pageview", location.pathname]);
-//   }, [location]);
-// }
-
-function Body() {
-  // usePageViews();
+const Body: React.FC = () => {
   const currentLocation = useLocation().pathname;
 
   return (
     <>
       <Navbar />
-      <div className="body-container">
+      <div className="Body">
         <Switch>
           <Route exact path="/">
-            <Test />
-          </Route>
-          <Route exact path="/(covid-)?map">
-            <FullScreenContainer>
-              <Map />
-            </FullScreenContainer>
+            <Home />
           </Route>
           <Route exact path="/404" render={(props) => <Page404 {...props} />} />
           <Route path="*">
@@ -66,21 +59,19 @@ function Body() {
             />
           </Route>
         </Switch>
+        {/* <ChangeColorButton /> */}
       </div>
-      <ChangeColorButton />
     </>
   );
-}
-
-// here app catches the suspense from page in case translations are not yet loaded
-const Main: React.FC = (): JSX.Element => {
-  return (
-    <HashRouter>
-      <Suspense fallback={<Loader />}>
-        <Body />
-      </Suspense>
-    </HashRouter>
-  );
 };
+
+// Here app catches the suspense from page in case translations are not yet loaded
+const Main: React.FC = () => (
+  <HashRouter>
+    <Suspense fallback={<Loader />}>
+      <Body />
+    </Suspense>
+  </HashRouter>
+);
 
 export default Main;
