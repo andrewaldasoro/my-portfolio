@@ -1,13 +1,15 @@
 .Page404 {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
+
   & > div {
     font-size: 3em;
     font-weight: lighter;
   }
   & > p {
     font-size: 10em;
-    margin: 0;
   }
 }

@@ -1,3 +1,8 @@
+// BREAKPOINTS
+$phone: 360px;
+$tablet: 768px;
+$desktop: 1200px;
+
 html {
   scroll-behavior: smooth;
   font-size: 12px;
@@ -70,6 +75,27 @@ a {
     --background-color
   ); // Not in body 'cause mix-blend-mode doesn't work
   color: var(--color);
+  display: grid;
+  grid-template-columns: repeat(12, 80px);
+  grid-template-rows: 40px auto;
+  gap: 20px;
+  justify-content: center;
+
+  @media (min-width: 0) {
+    grid-template-columns: repeat(4, auto);
+  }
+
+  @media (min-width: $phone) {
+    grid-template-columns: repeat(4, 80px);
+  }
+
+  @media (min-width: $tablet) {
+    grid-template-columns: repeat(8, 80px);
+  }
+
+  @media (min-width: $desktop) {
+    grid-template-columns: repeat(12, 80px);
+  }
 }
 
 #cursor {

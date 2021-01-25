@@ -25,6 +25,10 @@ const Home = () => {
   const style: CSSProperties = {
     fontSize: "8em",
     fontWeight: "bold",
+    gridColumn: "1 / -1",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   useEffect(() => {
@@ -44,23 +48,21 @@ const Body: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className="Body">
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/404" render={(props) => <Page404 {...props} />} />
-          <Route path="*">
-            <Redirect
-              to={{
-                pathname: "/404/",
-                state: { referrer: currentLocation },
-              }}
-            />
-          </Route>
-        </Switch>
-        {/* <ChangeColorButton /> */}
-      </div>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route exact path="/404" render={(props) => <Page404 {...props} />} />
+        <Route path="*">
+          <Redirect
+            to={{
+              pathname: "/404/",
+              state: { referrer: currentLocation },
+            }}
+          />
+        </Route>
+      </Switch>
+      {/* <ChangeColorButton /> */}
     </>
   );
 };
