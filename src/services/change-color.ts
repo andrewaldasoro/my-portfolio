@@ -4,6 +4,8 @@ export default function changeColor(
 ): void {
   if (!backgroundColor) backgroundColor = randomColor();
   if (!color) color = invertColor(backgroundColor);
+  localStorage.setItem("backgroundColor", backgroundColor);
+  localStorage.setItem("color", color);
   document.body.style.backgroundColor = backgroundColor;
   document.body.style.color = color;
   document.body.style.setProperty("--background-color", backgroundColor);

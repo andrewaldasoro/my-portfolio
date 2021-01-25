@@ -32,7 +32,15 @@ const Home = () => {
   };
 
   useEffect(() => {
-    changeColor("#f5ce4d", "#000000");
+    const colors = {
+      backgroundColor: localStorage.getItem("backgroundColor") || undefined,
+      color: localStorage.getItem("color") || undefined,
+    };
+    if (colors.backgroundColor && colors.color) {
+      changeColor(colors.backgroundColor, colors.color);
+    } else {
+      changeColor("#f5ce4d", "#000000");
+    }
   }, []);
 
   return (
