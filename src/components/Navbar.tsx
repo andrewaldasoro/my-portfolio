@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
       <Link replace to={{ pathname: "/" }}>
         Kev
       </Link>{" "}
-      {pwd} / <Input className="hidden bottom-line" maxLength={50} />
+      {pwd} / <Input maxLength={50} />
     </div>
   );
 };
