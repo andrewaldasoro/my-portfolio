@@ -1,4 +1,5 @@
-import React from "react";
+import React, { CSSProperties } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -15,10 +16,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Loader: React.FC = () => {
+const Loader: React.FC<{ styles?: CSSProperties }> = ({ styles }) => {
   const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <div className={classes.container} style={styles}>
       <CircularProgress
         className={classes.loader}
         size={100}
@@ -27,5 +28,9 @@ const Loader: React.FC = () => {
       />
     </div>
   );
+};
+
+Loader.propTypes = {
+  styles: PropTypes.any,
 };
 export default Loader;

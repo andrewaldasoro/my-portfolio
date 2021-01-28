@@ -29,6 +29,7 @@ const Home = () => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    textAlign: "center",
   };
 
   useEffect(() => {
@@ -78,7 +79,9 @@ const Body: React.FC = () => {
 // Here app catches the suspense from page in case translations are not yet loaded
 const Main: React.FC = () => (
   <HashRouter>
-    <Suspense fallback={<Loader />}>
+    <Suspense
+      fallback={<Loader styles={{ gridColumn: "1 / -1", gridRow: "1 / -1" }} />}
+    >
       <Body />
     </Suspense>
   </HashRouter>
