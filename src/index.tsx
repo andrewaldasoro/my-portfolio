@@ -1,11 +1,11 @@
 import React from "react";
-import { render } from "react-dom";
-import "./index.scss";
-import "./i18n";
-import Main from "./components/Main";
 import gsap from "gsap";
+import { createRoot } from "react-dom/client";
+import Main from "./components/Main";
+import "./i18n";
+import "./index.scss";
 
-render(<Main />, document.getElementById("root"));
+createRoot(document.getElementById("root")!).render(<Main />);
 
 gsap.set("#cursor", { force3D: true });
 document.addEventListener("mousemove", (e) => {

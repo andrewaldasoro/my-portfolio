@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import "./Page404.scss";
-import { RouteComponentProps } from "react-router-dom";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import changeColor from "../services/change-color";
+import "./Page404.scss";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Page404: React.FC<RouteComponentProps<any, any, any>> = (props) => {
+const Page404: React.FC<any> = (props) => {
   const [pathname, setPathname] = useState("");
 
   useEffect(() => {

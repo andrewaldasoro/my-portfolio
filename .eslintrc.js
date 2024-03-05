@@ -9,9 +9,7 @@ module.exports = {
     'plugin:jest/recommended',
     'plugin:react/recommended',
     'plugin:prettier/recommended',
-    'prettier',
-    'prettier/react',
-    'prettier/@typescript-eslint',
+    'prettier'
   ],
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'jest', 'only-warn'],
   globals: {
