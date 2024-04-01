@@ -1,0 +1,10 @@
+<a routerLink="/"> 🏡 </a>
+/
+<a routerLink="/"> Kev </a>
+@if (routes.length > 0) {
+  @for (route of routes; track route) {
+    / <a [routerLink]="[route.path]">{{ route.route }}</a>
+  }
+}
+/
+<app-navbar-input />

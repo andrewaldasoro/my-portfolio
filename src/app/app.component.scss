@@ -1,0 +1,52 @@
+@import '../variables.scss';
+
+:host {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-color: var(
+    --background-color
+  ); // Not in body 'cause mix-blend-mode doesn't work
+  color: var(--color);
+  display: grid;
+  grid-template-columns: repeat(12, 80px);
+  grid-template-rows: 40px auto;
+  gap: 20px;
+  justify-content: center;
+
+  @media (min-width: 0) {
+    grid-template-columns: repeat(4, auto);
+  }
+
+  @media (min-width: $phone) {
+    grid-template-columns: repeat(4, 80px);
+  }
+
+  @media (min-width: $tablet) {
+    grid-template-columns: repeat(8, 80px);
+  }
+
+  @media (min-width: $desktop) {
+    grid-template-columns: repeat(12, 80px);
+  }
+}
+
+[main] {
+  font-size: 8em;
+  font-weight: bold;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.change-color-button > button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  color: var(--color);
+  background-color: var(--background-color);
+  border: 2px solid var(--color);
+  z-index: 10;
+}

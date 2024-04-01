@@ -10,16 +10,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: yarn install, and test
+      - name: install dependencies, and test
         run: |
-          yarn
-          yarn lint
-          yarn test
+          npm i
+          npm run lint
+          npm run test

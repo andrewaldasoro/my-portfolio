@@ -1,0 +1,11 @@
+<div class="autocomplete opacity-40">{{ hint }}</div>
+<input
+  type="text"
+  class="input"
+  autocomplete="off"
+  data-cursor="text"
+  [(ngModel)]="value"
+  (ngModelChange)="onModelChange($event)"
+  (keydown)="onKeyDown($event)"
+  maxlength="50"
+/>
