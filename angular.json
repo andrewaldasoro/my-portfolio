@@ -38,7 +38,7 @@
             "index": "src/index.html",
             "inlineStyleLanguage": "scss",
             "outputPath": "dist/my-portfolio",
-            "polyfills": ["zone.js"],
+            "polyfills": ["@angular/localize/init", "zone.js"],
             "prerender": true,
             "scripts": [],
             "server": "src/main.server.ts",
@@ -72,7 +72,11 @@
           "options": {
             "assets": ["src/assets"],
             "inlineStyleLanguage": "scss",
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "@angular/localize/init",
+              "zone.js",
+              "zone.js/testing"
+            ],
             "scripts": [],
             "styles": ["src/styles.scss"],
             "tsConfig": "tsconfig.spec.json"
