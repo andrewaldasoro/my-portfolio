@@ -8,10 +8,9 @@ describe('ChangeColorButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangeColorButtonComponent]
-    })
-    .compileComponents();
-    
+      imports: [ChangeColorButtonComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ChangeColorButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
