@@ -12,6 +12,6 @@ export class ChangeColorButtonComponent {
   constructor(private changeColorService: ChangeColorService) {}
 
   changeColor() {
-    this.changeColorService.changeColor();
+    this.changeColorService.changeColor().save();
   }
 }

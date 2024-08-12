@@ -1,0 +1,7 @@
+<div #backdrop class="backdrop" (click)="onBackdropClick()"></div>
+<div #dialog class="dialog">
+  <a class="close" (click)="close()">&times;</a>
+  <div class="body">
+    <ng-content select="[body]"></ng-content>
+  </div>
+</div>

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { padZero } from '../utils';
+import { BACKGROUND_COLOR, COLOR } from './constants';
 
 @Injectable({
   providedIn: 'root',
@@ -6,29 +8,15 @@ import { Injectable } from '@angular/core';
 export class ChangeColorService {
   constructor() {}
 
-  changeColor(backgroundColor?: string, color?: string): void {
+  changeColor(backgroundColor?: string, color?: string): Theme {
     if (!backgroundColor) backgroundColor = this.randomColor();
     if (!color) color = this.invertColor(backgroundColor);
-    localStorage.setItem('backgroundColor', backgroundColor);
-    localStorage.setItem('color', color);
-    document.body.style.backgroundColor = backgroundColor;
-    document.body.style.color = color;
-    document.body.style.setProperty('--background-color', backgroundColor);
-    document.body.style.setProperty('--color', color);
 
-    document
-      .querySelector("meta[name='theme-color']")
-      ?.setAttribute('content', '#123456');
+    const theme = new Theme(backgroundColor, color);
 
-    document.querySelector("link[rel~='icon']")?.setAttribute(
-      'href',
-      `data:image/svg+xml,
-      <svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22>
-        <rect width=%2250%22 height=%2250%22 rx=%2230%22 fill=%22%23${backgroundColor.slice(
-          1,
-        )}%22 />
-      </svg>`,
-    );
+    theme.apply();
+
+    return theme;
   }
 
   private randomColor(): string {
@@ -49,10 +37,39 @@ export class ChangeColorService {
   }
 }
 
-// move to utils
-function padZero(c: string) {
-  if (c.length !== 2) {
-    return c.padStart(2, '0');
+export class Theme {
+  backgroundColor: string;
+  color: string;
+
+  constructor(backgroundColor: string, color: string) {
+    this.backgroundColor = backgroundColor;
+    this.color = color;
   }
-  return c;
+
+  apply() {
+    document.body.style.backgroundColor = this.backgroundColor;
+    document.body.style.color = this.color;
+    document.body.style.setProperty('--background-color', this.backgroundColor);
+    document.body.style.setProperty('--color', this.color);
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
+    document
+      .querySelector("meta[name='theme-color']")
+      ?.setAttribute('content', this.backgroundColor);
+
+    document.querySelector("link[rel~='icon']")?.setAttribute(
+      'href',
+      `data:image/svg+xml,
+      <svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22>
+        <rect width=%2250%22 height=%2250%22 rx=%2230%22 fill=%22%23${this.backgroundColor.slice(
+          1
+        )}%22 />
+      </svg>`
+    );
+  }
+
+  save() {
+    localStorage.setItem(BACKGROUND_COLOR, this.backgroundColor);
+    localStorage.setItem(COLOR, this.color);
+  }
 }
