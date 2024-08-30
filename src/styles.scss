@@ -80,4 +80,30 @@ a {
   left: 0;
   will-change: transform; // ???
   pointer-events: none; // ???
+  z-index: 9999;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+button {
+  user-select: none;
+  margin: auto 15px;
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  cursor: none;
+}
+
+.dialog button {
+  color: #000;
+  border-radius: 10px;
+  padding: 4px;
+  border: 2px solid #000;
 }

@@ -14,10 +14,12 @@ export class RouterService {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        map((event) => event as NavigationEnd),
+        map((event) => event as NavigationEnd)
       )
       .subscribe((event) => {
-        const url = event.url;
+        let url = event.url;
+
+        url = url.slice(0, url.indexOf('?')); // remove query params
         const paths = url.split('/').filter((route) => route !== '');
 
         const routes = paths.map((path, i) => {

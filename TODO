@@ -1,0 +1,4 @@
+- add reactive click to the cursor and to buttons
+- Disable gsap mouse events on phone or ipad (touch), diff mouse events from touch events
+- Fix background animation colors fading when other using other color
+- Add reset main color button

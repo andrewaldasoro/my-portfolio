@@ -58,5 +58,5 @@
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "watch": "ng build --watch --configuration development"
   },
-  "version": "1.0.2"
+  "version": "1.0.3"
 }
