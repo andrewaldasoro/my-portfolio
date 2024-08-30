@@ -1,4 +1,6 @@
-<button (click)="dialog.show()">⚙️</button>
+<a routerLink="" [queryParams]="{ dialog: 'settings' }" class="setting-button"
+  >⚙️</a
+>
 
 <app-dialog>
   <ng-container body>

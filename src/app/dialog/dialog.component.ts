@@ -1,4 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog',
@@ -10,7 +11,7 @@ import { Component, HostBinding } from '@angular/core';
 export class DialogComponent {
   @HostBinding('style.display') private display = 'none';
 
-  constructor() {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   onBackdropClick() {
     this.close();
@@ -21,6 +22,12 @@ export class DialogComponent {
   }
 
   close() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { dialog: null },
+      queryParamsHandling: 'merge',
+    });
+
     this.display = 'none';
   }
 }
