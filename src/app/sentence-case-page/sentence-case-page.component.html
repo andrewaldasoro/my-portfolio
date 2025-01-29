@@ -1,0 +1,10 @@
+<select (change)="onFormatChange($event)">
+  @for (format of formats; track $index) {
+  <option [value]="format">{{ format }}</option>
+  }
+</select>
+<textarea
+  [ngModel]="translate"
+  (ngModelChange)="onTranslateChange($event)"
+></textarea>
+<textarea [value]="translated" readonly></textarea>

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Route } from '../router';
 import { RouterService } from '../router.service';
 
-const routes = ['skills', 'experience', 'education'];
+const routes = ['skills', 'experience', 'education', 'format-text'];
 
 @Component({
   selector: 'app-navbar-input',
@@ -28,10 +28,7 @@ export class NavbarInputComponent {
   private trailingSlashes = new RegExp(/^(\/){1,}|(\/){1,}$/);
   private twoOrMoreSlashes = new RegExp(/(\/){2,}/);
 
-  constructor(
-    private router: Router,
-    private routerService: RouterService,
-  ) {
+  constructor(private router: Router, private routerService: RouterService) {
     effect(() => {
       this.routes = this.routerService.routes();
     });

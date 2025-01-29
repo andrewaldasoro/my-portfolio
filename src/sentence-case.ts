@@ -1,4 +1,4 @@
-enum SentenceCase {
+export enum SentenceCase {
   CAMEL = 'camelCase',
   KEBAB = 'kebab-case',
   CATERPILLAR = 'caterpillar-case',
@@ -20,29 +20,32 @@ enum SentenceCase {
 }
 
 function splitWords(s: string): string[] {
-  return s.split(/[^0-9a-zA-Z]+/).flatMap((w) => {
-    const substrings: string[] = [];
-    const upperCaseWs = w.matchAll(/[A-Z]+/g);
+  return s
+    .split(/[^0-9a-zA-Z]+/)
+    .flatMap((w) => {
+      const substrings: string[] = [];
+      const upperCaseWs = w.matchAll(/[A-Z]+/g);
 
-    let prevI = 0;
-    let currI = 0;
-    let upperCaseW = upperCaseWs.next();
-    while (!upperCaseW.done) {
-      prevI = currI;
-      currI = upperCaseW.value.index;
+      let prevI = 0;
+      let currI = 0;
+      let upperCaseW = upperCaseWs.next();
+      while (!upperCaseW.done) {
+        prevI = currI;
+        currI = upperCaseW.value.index;
 
-      if (currI !== 0) {
-        const substring = w.substring(prevI, currI);
-        substrings.push(substring);
+        if (currI !== 0) {
+          const substring = w.substring(prevI, currI);
+          substrings.push(substring);
+        }
+
+        upperCaseW = upperCaseWs.next();
       }
 
-      upperCaseW = upperCaseWs.next();
-    }
+      substrings.push(w.substring(currI));
 
-    substrings.push(w.substring(currI));
-
-    return substrings;
-  });
+      return substrings;
+    })
+    .filter((w) => !!w);
 }
 
 export function toCamelCase(s: string): string {
