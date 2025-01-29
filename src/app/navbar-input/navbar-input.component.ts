@@ -7,11 +7,10 @@ import { RouterService } from '../router.service';
 const routes = ['skills', 'experience', 'education', 'format-text'];
 
 @Component({
-  selector: 'app-navbar-input',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './navbar-input.component.html',
-  styleUrl: './navbar-input.component.scss',
+    selector: 'app-navbar-input',
+    imports: [FormsModule],
+    templateUrl: './navbar-input.component.html',
+    styleUrl: './navbar-input.component.scss'
 })
 export class NavbarInputComponent {
   value = '';

@@ -3,10 +3,9 @@ import { ChangeColorService } from '../change-color.service';
 import { RouterService } from '../router.service';
 
 @Component({
-  standalone: true,
-  imports: [],
-  templateUrl: './page-not-found.component.html',
-  styleUrl: './page-not-found.component.scss',
+    imports: [],
+    templateUrl: './page-not-found.component.html',
+    styleUrl: './page-not-found.component.scss'
 })
 export class PageNotFoundComponent {
   url: string = '';

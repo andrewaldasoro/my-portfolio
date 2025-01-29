@@ -5,11 +5,10 @@ import { ChangeColorButtonComponent } from '../change-color-button/change-color-
 import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  imports: [RouterModule, DialogComponent, ChangeColorButtonComponent],
-  templateUrl: './settings-button.component.html',
-  styleUrl: './settings-button.component.scss',
+    selector: 'app-settings',
+    imports: [RouterModule, DialogComponent, ChangeColorButtonComponent],
+    templateUrl: './settings-button.component.html',
+    styleUrl: './settings-button.component.scss'
 })
 export class SettingsButtonComponent {
   @ViewChild(DialogComponent) dialog!: DialogComponent;

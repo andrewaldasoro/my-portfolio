@@ -1,4 +1,4 @@
-@import "../variables.scss";
+@use "../variables.scss";
 
 :host {
   position: relative;
@@ -18,15 +18,15 @@
     grid-template-columns: repeat(4, auto);
   }
 
-  @media (min-width: $phone) {
+  @media (min-width: variables.$phone) {
     grid-template-columns: repeat(4, 80px);
   }
 
-  @media (min-width: $tablet) {
+  @media (min-width: variables.$tablet) {
     grid-template-columns: repeat(8, 80px);
   }
 
-  @media (min-width: $desktop) {
+  @media (min-width: variables.$desktop) {
     grid-template-columns: repeat(12, 80px);
   }
 }

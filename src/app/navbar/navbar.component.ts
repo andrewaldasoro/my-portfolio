@@ -5,11 +5,10 @@ import { Route } from '../router';
 import { RouterService } from '../router.service';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [RouterModule, NavbarInputComponent],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss',
+    selector: 'app-navbar',
+    imports: [RouterModule, NavbarInputComponent],
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
   routes: Route[] = [];

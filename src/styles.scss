@@ -1,8 +1,9 @@
+@use "sass:meta";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "variables.scss";
+@include meta.load-css("variables.scss");
 
 html {
   scroll-behavior: smooth;

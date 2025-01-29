@@ -8,11 +8,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SettingsButtonComponent } from './settings-button/settings-button.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+    selector: 'app-root',
+    imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
   @HostListener('document:mousemove', ['$event']) handleMouseMove(

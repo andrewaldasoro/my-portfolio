@@ -3,10 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { convertString, SentenceCase } from '../../sentence-case';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './sentence-case-page.component.html',
-  styleUrl: './sentence-case-page.component.scss',
+    imports: [FormsModule],
+    templateUrl: './sentence-case-page.component.html',
+    styleUrl: './sentence-case-page.component.scss'
 })
 export class SentenceCasePageComponent {
   formats = Object.values(SentenceCase);
