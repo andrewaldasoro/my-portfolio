@@ -1,10 +1,10 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding } from "@angular/core";
 
 @Component({
-    selector: 'app-home',
-    imports: [],
-    templateUrl: './home.component.html'
+	selector: "app-home",
+	imports: [],
+	templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-  @HostBinding('attr.data-cursor') private cursor = 'text';
+	@HostBinding("attr.data-cursor") private cursor = "text";
 }

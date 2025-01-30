@@ -1,0 +1,59 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"ignore": [
+			"./.angular",
+			"./.aws",
+			"./.github",
+			"./.vscode",
+			"./amplify",
+			"./node_modules",
+			"./package*.json",
+			"./dist",
+			"**/npm-debug.log",
+			"./test-reports",
+			"./logs"
+		],
+		"ignoreUnknown": false
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"overrides": [
+		{
+			"include": ["*.ts"],
+			"linter": {
+				"rules": {}
+			}
+		},
+		{
+			"include": ["*.html"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "warn"
+					}
+				}
+			}
+		}
+	],
+	"vcs": {
+		"clientKind": "git",
+		"enabled": false,
+		"useIgnoreFile": false
+	}
+}

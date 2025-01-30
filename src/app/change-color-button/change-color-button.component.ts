@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
-import { ChangeColorService } from '../change-color.service';
+import { Component, Inject } from "@angular/core";
+import { ChangeColorService } from "../change-color.service";
 
 @Component({
-    selector: 'app-change-color-button',
-    imports: [],
-    templateUrl: './change-color-button.component.html',
-    styleUrl: './change-color-button.component.scss'
+	selector: "app-change-color-button",
+	imports: [],
+	templateUrl: "./change-color-button.component.html",
+	styleUrl: "./change-color-button.component.scss",
 })
 export class ChangeColorButtonComponent {
-  constructor(private changeColorService: ChangeColorService) {}
+	constructor(
+		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
+	) {}
 
-  changeColor() {
-    this.changeColorService.changeColor().save();
-  }
+	changeColor() {
+		this.changeColorService.changeColor().save();
+	}
 }

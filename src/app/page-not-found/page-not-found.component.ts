@@ -1,23 +1,23 @@
-import { Component, effect } from '@angular/core';
-import { ChangeColorService } from '../change-color.service';
-import { RouterService } from '../router.service';
+import { Component, Inject, effect } from "@angular/core";
+import { ChangeColorService } from "../change-color.service";
+import { RouterService } from "../router.service";
 
 @Component({
-    imports: [],
-    templateUrl: './page-not-found.component.html',
-    styleUrl: './page-not-found.component.scss'
+	imports: [],
+	templateUrl: "./page-not-found.component.html",
+	styleUrl: "./page-not-found.component.scss",
 })
 export class PageNotFoundComponent {
-  url: string = '';
+	url = "";
 
-  constructor(
-    private routerService: RouterService,
-    private changeColorService: ChangeColorService,
-  ) {
-    effect(() => {
-      this.url = this.routerService.url();
-    });
+	constructor(
+		@Inject(RouterService) private routerService: RouterService,
+		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
+	) {
+		effect(() => {
+			this.url = this.routerService.url();
+		});
 
-    this.changeColorService.changeColor('#ff6347', '#000000');
-  }
+		this.changeColorService.changeColor("#ff6347", "#000000");
+	}
 }
