@@ -5,5 +5,3 @@
 
 - sentence case, what to do with names like SpC, gNB, Wi-Fi, WiFi, BLiNQ, ...? they should be treated as words, for golang this should be all uppercase unless the sentence starts with this word.
   - how to identify words of brands or in specifications
-
-Use Biome to format code
