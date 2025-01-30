@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
 	selector: "app-dialog",
-	imports: [],
 	templateUrl: "./dialog.component.html",
 	styleUrl: "./dialog.component.scss",
 })
