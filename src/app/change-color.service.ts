@@ -2,9 +2,7 @@ import { Injectable } from "@angular/core";
 import { padZero } from "../utils";
 import { BACKGROUND_COLOR, COLOR } from "./constants";
 
-@Injectable({
-	providedIn: "root",
-})
+@Injectable()
 export class ChangeColorService {
 	changeColor(backgroundColor?: string, color?: string): Theme {
 		let _backgroundColor = backgroundColor;

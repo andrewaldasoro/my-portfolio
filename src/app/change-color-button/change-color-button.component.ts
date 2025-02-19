@@ -3,9 +3,9 @@ import { ChangeColorService } from "../change-color.service";
 
 @Component({
 	selector: "app-change-color-button",
-	imports: [],
 	templateUrl: "./change-color-button.component.html",
 	styleUrl: "./change-color-button.component.scss",
+	providers: [ChangeColorService],
 })
 export class ChangeColorButtonComponent {
 	constructor(

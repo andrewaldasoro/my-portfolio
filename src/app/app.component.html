@@ -1,7 +1,13 @@
-<div header>
-  <app-navbar />
-  <app-settings />
-</div>
-<div main>
-  <router-outlet />
-</div>
+@if (isConfigLoaded()) {
+  <div header>
+    <app-navbar />
+    <app-settings />
+  </div>
+  <div main>
+    <router-outlet />
+  </div>
+}
+@else {
+  <!-- spinner -->
+   Loading...
+}

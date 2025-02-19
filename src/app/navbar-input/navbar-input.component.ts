@@ -4,7 +4,8 @@ import { Router } from "@angular/router";
 import type { Route } from "../router";
 import { RouterService } from "../router.service";
 
-const routes = ["skills", "experience", "education", "format-text"];
+// const routes = ["skills", "experience", "education", "format-text", "map"];
+const routes = ["format-text", "map"];
 
 @Component({
 	selector: "app-navbar-input",

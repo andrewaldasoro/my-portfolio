@@ -3,9 +3,9 @@ import { ChangeColorService } from "../change-color.service";
 import { RouterService } from "../router.service";
 
 @Component({
-	imports: [],
 	templateUrl: "./page-not-found.component.html",
 	styleUrl: "./page-not-found.component.scss",
+	providers: [ChangeColorService],
 })
 export class PageNotFoundComponent {
 	url = "";

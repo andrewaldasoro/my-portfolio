@@ -3,6 +3,7 @@ import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import gsap from "gsap";
 import { ChangeColorService } from "./change-color.service";
+import { ConfigurationService } from "./configuration.service";
 import { BACKGROUND_COLOR, COLOR } from "./constants";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { SettingsButtonComponent } from "./settings-button/settings-button.component";
@@ -12,6 +13,7 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
 	imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
+	providers: [ChangeColorService],
 })
 export class AppComponent {
 	@HostListener("document:mousemove", ["$event"]) handleMouseMove(
@@ -52,9 +54,14 @@ export class AppComponent {
 		});
 	}
 
+	readonly isConfigLoaded =
+		this.configurationService.isConfigLoaded.asReadonly();
+
 	constructor(
 		// biome-ignore lint/complexity/noBannedTypes: Angular 19 uses it like that
 		@Inject(PLATFORM_ID) private platformId: Object,
+		@Inject(ConfigurationService)
+		protected configurationService: ConfigurationService,
 		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
 	) {
 		if (isPlatformBrowser(this.platformId)) {
