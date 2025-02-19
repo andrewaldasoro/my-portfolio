@@ -16,6 +16,7 @@ export class NavbarComponent {
 	constructor(@Inject(RouterService) private routerService: RouterService) {
 		effect(() => {
 			this.routes = this.routerService.routes();
+			console.log(this.routes);
 		});
 	}
 }

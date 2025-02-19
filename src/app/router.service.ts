@@ -11,26 +11,34 @@ export class RouterService {
 	url = signal<string>("");
 
 	constructor(@Inject(Router) private router: Router) {
+		// initial page load
+		let url = this.router.url;
+		this.updateRoutes(url);
+
 		this.router.events
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),
 				map((event) => event as NavigationEnd),
 			)
 			.subscribe((event) => {
-				let url = event.url;
+				url = event.url;
 
-				url = url.slice(0, url.indexOf("?")); // remove query params
-				const paths = url.split("/").filter((route) => route !== "");
-
-				const routes = paths.map((path, i) => {
-					return {
-						path: `/${paths.slice(0, i + 1).join("/")}`,
-						route: path,
-					};
-				});
-
-				this.url.set(url);
-				this.routes.set(routes);
+				this.updateRoutes(url);
 			});
+	}
+
+	private updateRoutes(url: string) {
+		let _url = url;
+		const queryIndex = _url.indexOf("?");
+		if (queryIndex !== -1) _url = _url.slice(0, _url.indexOf("?")); // remove query params
+		const paths = _url.split("/").filter((route) => route !== "");
+
+		const routes = paths.map((path, i) => ({
+			path: `/${paths.slice(0, i + 1).join("/")}`,
+			route: path,
+		}));
+
+		this.url.set(_url);
+		this.routes.set(routes);
 	}
 }
