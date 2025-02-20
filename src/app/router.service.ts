@@ -15,6 +15,7 @@ export class RouterService {
 		let url = this.router.url;
 		this.updateRoutes(url);
 
+		// subsequent navigation
 		this.router.events
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),

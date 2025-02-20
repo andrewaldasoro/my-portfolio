@@ -1,7 +1,11 @@
+# Main
+
+- Fix navbar shadow, and show 5+ autocomplete options
 - add reactive click to the cursor and to buttons
 - Disable gsap mouse events on phone or ipad (touch), diff mouse events from touch events
 - Fix background animation colors fading when other using other color
 - Add reset main color button
 
+- format-text, style the component (like google translate), make the boxes background to contrast
 - sentence case, what to do with names like SpC, gNB, Wi-Fi, WiFi, BLiNQ, ...? they should be treated as words, for golang this should be all uppercase unless the sentence starts with this word.
   - how to identify words of brands or in specifications

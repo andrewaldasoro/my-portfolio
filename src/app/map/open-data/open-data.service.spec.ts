@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MapService } from './map.service';
+import { OpenDataService } from './open-data.service';
 
-describe('MapService', () => {
-  let service: MapService;
+describe('OpenDataService', () => {
+  let service: OpenDataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MapService);
+    service = TestBed.inject(OpenDataService);
   });
 
   it('should be created', () => {
