@@ -58,7 +58,7 @@ export class MapService {
 		this.zone.runOutsideAngular(() => {
 			if (!this.mapInstance) throw "map not found";
 
-			const sourceId = "neighborhoods";
+			const sourceId = "neighbourhoods";
 			const features: GeoJSON.Feature[] = [];
 			for (const neighbourhood of neighbourhoods) {
 				const { geometry, ...properties } = neighbourhood;

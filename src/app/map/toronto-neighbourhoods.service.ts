@@ -5,7 +5,7 @@ import type { Neighbourhood } from "./map.types";
 import { OpenDataService } from "./open-data/open-data.service";
 import type {
 	DataStore,
-	NeighborhoodResponse,
+	NeighbourhoodResponse,
 	Response,
 } from "./open-data/open-data.types";
 import { getTorontoDataStoreByResourceIdUrl } from "./open-data/open-data.utils";
@@ -17,10 +17,16 @@ export class TorontoNeighbourhoodsService {
 	constructor(
 		@Inject(HttpClient) private http: HttpClient,
 		@Inject(OpenDataService) private openDataService: OpenDataService,
-	) {}
+	) {
+		const neighbourhoodsString = localStorage.getItem("neighbourhoods");
+		if (neighbourhoodsString) {
+			const neighbourhoods = JSON.parse(neighbourhoodsString);
+			this.neighbourhoods = neighbourhoods;
+		}
+	}
 
 	getTorontoNeighbourhoods(): Observable<Neighbourhood[]> {
-		// return cached the neighborhoods
+		// return cached the neighbourhoods
 		if (this.neighbourhoods.length > 0) {
 			return of(this.neighbourhoods);
 		}
@@ -35,8 +41,11 @@ export class TorontoNeighbourhoodsService {
 					this.getTorontoNeighbourhoodsByResourceId(resources[0].id),
 				),
 				tap((neighbourhoods) => {
-					// TODO store in local storage
 					this.neighbourhoods = neighbourhoods;
+
+					// store in local storage
+					const neighbourhoodsString = JSON.stringify(neighbourhoods);
+					localStorage.setItem("neighbourhoods", neighbourhoodsString);
 				}),
 			);
 	}
@@ -73,18 +82,18 @@ export class TorontoNeighbourhoodsService {
 	private getTorontoNeighbourhoodDataStoreRecursive(
 		resourceId: string,
 		offset = 0,
-	): Observable<DataStore<NeighborhoodResponse>> {
-		const request = this.getTorontoNeighbourhoodDataStore(resourceId, 0);
+	): Observable<DataStore<NeighbourhoodResponse>> {
+		const request = this.getTorontoNeighbourhoodDataStore(resourceId, offset);
 
 		return request.pipe(
 			switchMap((result) => {
-				const nextUrl = result._links.next;
 				const limit = result.limit;
-				if (nextUrl) {
-					const _offset = limit + offset;
+				const nextOffset = limit + offset;
+
+				if (nextOffset < result.total) {
 					return this.getTorontoNeighbourhoodDataStoreRecursive(
 						resourceId,
-						_offset,
+						nextOffset,
 					).pipe(
 						map((_result) => {
 							_result.records = result.records.concat(_result.records);
@@ -102,8 +111,8 @@ export class TorontoNeighbourhoodsService {
 	private getTorontoNeighbourhoodDataStore(
 		resourceId: string,
 		offset = 0,
-	): Observable<DataStore<NeighborhoodResponse>> {
-		const request = this.http.get<Response<DataStore<NeighborhoodResponse>>>(
+	): Observable<DataStore<NeighbourhoodResponse>> {
+		const request = this.http.get<Response<DataStore<NeighbourhoodResponse>>>(
 			getTorontoDataStoreByResourceIdUrl(resourceId, offset),
 		);
 

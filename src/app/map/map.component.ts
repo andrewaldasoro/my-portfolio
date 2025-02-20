@@ -78,8 +78,8 @@ export class MapComponent implements AfterViewInit {
 	private loadNeighbourhoods(): Observable<Neighbourhood[]> {
 		return this.torontoNeighbourhoodsService.getTorontoNeighbourhoods().pipe(
 			takeUntil(this.unsubscriber),
-			tap((neighborhoods) => {
-				this.mapService.addNeighbourhoods(neighborhoods);
+			tap((neighbourhoods) => {
+				this.mapService.addNeighbourhoods(neighbourhoods);
 			}),
 		);
 	}

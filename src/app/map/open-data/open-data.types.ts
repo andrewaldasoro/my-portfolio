@@ -18,11 +18,11 @@ export interface Package {
 	resources: { id: string; datastore_active: boolean }[];
 }
 
-export type NeighborhoodResponse = Omit<Neighborhood, "geometry"> & {
+export type NeighbourhoodResponse = Omit<Neighbourhood, "geometry"> & {
 	geometry: string;
 };
 
-interface Neighborhood {
+interface Neighbourhood {
 	_id: number;
 	AREA_ID: number;
 	AREA_ATTR_ID: number;
