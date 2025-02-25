@@ -5,7 +5,7 @@ import type { Route } from "../router";
 import { RouterService } from "../router.service";
 
 // const routes = ["skills", "experience", "education", "format-text", "map"];
-const routes = ["format-text", "map"];
+const routes = ["format-text"];
 
 @Component({
 	selector: "app-navbar-input",

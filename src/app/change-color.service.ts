@@ -7,7 +7,7 @@ export class ChangeColorService {
 	changeColor(backgroundColor?: string, color?: string): Theme {
 		let _backgroundColor = backgroundColor;
 		let _color = color;
-		if (!_backgroundColor) _backgroundColor = this.randomColor();
+		if (!_backgroundColor) _backgroundColor = this.randomColor(); // TODO: try with 128 when creating the background effects
 		if (!_color) _color = this.invertColor(_backgroundColor);
 
 		const theme = new Theme(_backgroundColor, _color);
@@ -17,21 +17,30 @@ export class ChangeColorService {
 		return theme;
 	}
 
-	private randomColor(): string {
-		let randomHex = Math.floor(Math.random() * 0xffffff).toString(16);
-		if (randomHex.length !== 6) randomHex = randomHex.padStart(6, "0");
+	private randomColor(brightness = 256): string {
+		const randHex = (max = 256): string => {
+			return padZero(Math.floor(Math.random() * max).toString(16));
+		};
+		const r = randHex(brightness); // Keep RGB values low for dark colors
+		const g = randHex(brightness);
+		const b = randHex(brightness);
+		// let randomHex = Math.floor(Math.random() * 0xffffff).toString(16);
+		// if (randomHex.length !== 6) randomHex = randomHex.padStart(6, "0");
 
-		return `#${randomHex}`;
+		return `#${r}${g}${b}`;
 	}
 
 	private invertColor(hex: string): string {
 		const _hex = hex.slice(1); // remove the hash (#)
+		const invertHexByte = (hexByte: string): string => {
+			return padZero((255 - Number.parseInt(hexByte, 16)).toString(16));
+		};
 
-		const r = (255 - Number.parseInt(_hex.slice(0, 2), 16)).toString(16);
-		const g = (255 - Number.parseInt(_hex.slice(2, 4), 16)).toString(16);
-		const b = (255 - Number.parseInt(_hex.slice(4, 6), 16)).toString(16);
+		const r = invertHexByte(_hex.slice(0, 2));
+		const g = invertHexByte(_hex.slice(2, 4));
+		const b = invertHexByte(_hex.slice(4, 6));
 
-		return `#${padZero(r)}${padZero(g)}${padZero(b)}`;
+		return `#${r}${g}${b}`;
 	}
 }
 

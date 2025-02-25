@@ -4,10 +4,6 @@
   position: relative;
   height: 100%;
   width: 100%;
-  background-color: var(
-    --background-color
-  ); // Not in body 'cause mix-blend-mode doesn't work
-  color: var(--color);
   display: grid;
   grid-template-columns: repeat(12, 80px);
   grid-template-rows: 4em auto;
