@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { BackgroundEffectsService } from './background-effects.service';
+import { BackgroundDotsEffectsService } from "./background-dots-effects.service";
 
-describe('BackgroundEffectsService', () => {
-  let service: BackgroundEffectsService;
+describe("BackgroundEffectsService", () => {
+	let service: BackgroundDotsEffectsService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BackgroundEffectsService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(BackgroundDotsEffectsService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it("should be created", () => {
+		expect(service).toBeTruthy();
+	});
 });

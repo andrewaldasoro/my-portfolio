@@ -1,8 +1,8 @@
-import type * as THREE from "three";
+import type { PerspectiveCamera, WebGLRenderer } from "three";
 
 export function resizeRendererToElementSize(
-	renderer: THREE.WebGLRenderer,
-	camera: THREE.PerspectiveCamera,
+	renderer: WebGLRenderer,
+	camera: PerspectiveCamera,
 ) {
 	const canvas = renderer.domElement;
 	const width = canvas.clientWidth;
@@ -14,11 +14,13 @@ export function resizeRendererToElementSize(
 		const aspect = width / height;
 
 		// Calculate FOV dynamically to fit the scene
-		const fov =
-			2 * Math.atan(height / (2 * camera.position.z)) * (180 / Math.PI);
-		camera.fov = fov;
+		camera.fov = getFovToFitTheScene(height, camera.position.z);
 		camera.aspect = aspect;
 		camera.updateProjectionMatrix();
 	}
 	return needResize;
+}
+
+function getFovToFitTheScene(height: number, cameraZPos: number): number {
+	return 2 * Math.atan(height / (2 * cameraZPos)) * (180 / Math.PI);
 }

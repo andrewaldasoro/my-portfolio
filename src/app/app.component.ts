@@ -2,7 +2,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import gsap from "gsap";
-import { BackgroundEffectsService } from "./background-effects.service";
+import { BackgroundLettersEffectsService } from "./background-letters-effects.service";
 import { ChangeColorService } from "./change-color.service";
 import { ConfigurationService } from "./configuration.service";
 import { BACKGROUND_COLOR, COLOR } from "./constants";
@@ -14,7 +14,7 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
 	imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
-	providers: [ChangeColorService, BackgroundEffectsService],
+	providers: [ChangeColorService, BackgroundLettersEffectsService],
 })
 export class AppComponent {
 	@HostListener("document:mousemove", ["$event"]) handleMouseMove(
@@ -55,10 +55,6 @@ export class AppComponent {
 		});
 	}
 
-	@HostListener("window:resize", ["$event"]) handleWindowResize(event: Event) {
-		this.backgroundEffectsService.render();
-	}
-
 	readonly isConfigLoaded =
 		this.configurationService.isConfigLoaded.asReadonly();
 
@@ -68,8 +64,8 @@ export class AppComponent {
 		@Inject(ConfigurationService)
 		protected configurationService: ConfigurationService,
 		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
-		@Inject(BackgroundEffectsService)
-		private backgroundEffectsService: BackgroundEffectsService,
+		@Inject(BackgroundLettersEffectsService)
+		private backgroundEffectsService: BackgroundLettersEffectsService,
 	) {
 		if (isPlatformBrowser(this.platformId)) {
 			this.addCursorAttributesAndEvents();
