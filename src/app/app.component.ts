@@ -2,7 +2,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { Component, HostListener, PLATFORM_ID, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import gsap from "gsap";
-import { BackgroundLettersEffectsService } from "./background-letters-effects.service";
+import { BackgroundEffectService } from "./background-effect/background-effect.service";
 import { ChangeColorService } from "./change-color.service";
 import { ConfigurationService } from "./configuration.service";
 import { BACKGROUND_COLOR, COLOR } from "./constants";
@@ -14,12 +14,12 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
 	imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
-	providers: [ChangeColorService, BackgroundLettersEffectsService],
+	providers: [ChangeColorService, BackgroundEffectService],
 })
 export class AppComponent {
 	private platformId = inject(PLATFORM_ID);
 	private changeColorService = inject(ChangeColorService);
-	private backgroundEffectsService = inject(BackgroundLettersEffectsService);
+	private backgroundEffectsService = inject(BackgroundEffectService);
 	protected configurationService = inject(ConfigurationService);
 
 	@HostListener("document:mousemove", ["$event"]) handleMouseMove(
@@ -68,7 +68,7 @@ export class AppComponent {
 			this.addCursorAttributesAndEvents();
 
 			this.setTheme();
-			this.backgroundEffectsService.init();
+			this.backgroundEffectsService.init("chars");
 		}
 	}
 

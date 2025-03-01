@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 
-import { BackgroundDotsEffectsService } from "./background-dots-effects.service";
+import { BackgroundEffectService } from "./background-effect.service";
 
 describe("BackgroundEffectsService", () => {
-	let service: BackgroundDotsEffectsService;
+	let service: BackgroundEffectService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({});
-		service = TestBed.inject(BackgroundDotsEffectsService);
+		service = TestBed.inject(BackgroundEffectService);
 	});
 
 	it("should be created", () => {
