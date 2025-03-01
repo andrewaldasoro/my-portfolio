@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from "@angular/core";
+import { Component, inject, viewChild } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 import { ChangeColorButtonComponent } from "../change-color-button/change-color-button.component";
@@ -11,15 +11,16 @@ import { DialogComponent } from "../dialog/dialog.component";
 	styleUrl: "./settings-button.component.scss",
 })
 export class SettingsButtonComponent {
-	@ViewChild(DialogComponent) dialog!: DialogComponent;
+	readonly dialog = viewChild.required(DialogComponent);
+	private route = inject(ActivatedRoute);
 	private unsubscriber = new Subject<void>();
 
-	constructor(@Inject(ActivatedRoute) private route: ActivatedRoute) {
+	constructor() {
 		this.route.queryParams
 			.pipe(takeUntil(this.unsubscriber))
 			.subscribe((params) => {
 				if (params.dialog === "settings") {
-					this.dialog.show();
+					this.dialog().show();
 				}
 			});
 	}

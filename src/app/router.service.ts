@@ -1,4 +1,4 @@
-import { Inject, Injectable, signal } from "@angular/core";
+import { Injectable, inject, signal } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, map } from "rxjs";
 import type { Route } from "./router";
@@ -7,10 +7,12 @@ import type { Route } from "./router";
 	providedIn: "root",
 })
 export class RouterService {
+	private router = inject(Router);
+
 	routes = signal<Route[]>([]);
 	url = signal<string>("");
 
-	constructor(@Inject(Router) private router: Router) {
+	constructor() {
 		// initial page load
 		let url = this.router.url;
 		this.updateRoutes(url);

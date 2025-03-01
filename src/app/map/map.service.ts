@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone, signal } from "@angular/core";
+import { Injectable, NgZone, inject, signal } from "@angular/core";
 import mapboxgl from "mapbox-gl";
 import { Subscription } from "rxjs";
 import { first } from "rxjs/operators";
@@ -8,16 +8,15 @@ import type { Neighbourhood } from "./map.types";
 
 @Injectable()
 export class MapService {
+	private zone = inject(NgZone);
+	protected configurationService = inject(ConfigurationService);
+
 	mapCreated = signal(false);
 	mapInstance?: mapboxgl.Map;
 
 	private subscription = new Subscription();
 
-	constructor(
-		private zone: NgZone,
-		@Inject(ConfigurationService)
-		protected configurationService: ConfigurationService,
-	) {
+	constructor() {
 		if (!environment.mapboxAccessToken) {
 			throw new Error("'mapboxAccessToken' not found in configuration");
 		}

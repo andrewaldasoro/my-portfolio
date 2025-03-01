@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { type Observable, map, of, switchMap, tap } from "rxjs";
 import type { Neighbourhood } from "./map.types";
 import { OpenDataService } from "./open-data/open-data.service";
@@ -12,12 +12,12 @@ import { getTorontoDataStoreByResourceIdUrl } from "./open-data/open-data.utils"
 
 @Injectable()
 export class TorontoNeighbourhoodsService {
+	private http = inject(HttpClient);
+	private openDataService = inject(OpenDataService);
+
 	private neighbourhoods: Neighbourhood[] = [];
 
-	constructor(
-		@Inject(HttpClient) private http: HttpClient,
-		@Inject(OpenDataService) private openDataService: OpenDataService,
-	) {
+	constructor() {
 		const neighbourhoodsString = localStorage.getItem("neighbourhoods");
 		if (neighbourhoodsString) {
 			const neighbourhoods = JSON.parse(neighbourhoodsString);

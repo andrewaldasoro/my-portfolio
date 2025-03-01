@@ -1,4 +1,4 @@
-import { Component, HostBinding, Inject } from "@angular/core";
+import { Component, HostBinding, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
@@ -7,12 +7,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 	styleUrl: "./dialog.component.scss",
 })
 export class DialogComponent {
-	@HostBinding("style.display") private display = "none";
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
-	constructor(
-		@Inject(Router) private router: Router,
-		@Inject(ActivatedRoute) private route: ActivatedRoute,
-	) {}
+	@HostBinding("style.display") private display = "none";
 
 	onBackdropClick() {
 		this.close();

@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from "@angular/common";
-import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
+import { Component, HostListener, PLATFORM_ID, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import gsap from "gsap";
 import { BackgroundLettersEffectsService } from "./background-letters-effects.service";
@@ -17,6 +17,11 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
 	providers: [ChangeColorService, BackgroundLettersEffectsService],
 })
 export class AppComponent {
+	private platformId = inject(PLATFORM_ID);
+	private changeColorService = inject(ChangeColorService);
+	private backgroundEffectsService = inject(BackgroundLettersEffectsService);
+	protected configurationService = inject(ConfigurationService);
+
 	@HostListener("document:mousemove", ["$event"]) handleMouseMove(
 		event: MouseEvent,
 	) {
@@ -58,15 +63,7 @@ export class AppComponent {
 	readonly isConfigLoaded =
 		this.configurationService.isConfigLoaded.asReadonly();
 
-	constructor(
-		// biome-ignore lint/complexity/noBannedTypes: Angular 19 uses it like that
-		@Inject(PLATFORM_ID) private platformId: Object,
-		@Inject(ConfigurationService)
-		protected configurationService: ConfigurationService,
-		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
-		@Inject(BackgroundLettersEffectsService)
-		private backgroundEffectsService: BackgroundLettersEffectsService,
-	) {
+	constructor() {
 		if (isPlatformBrowser(this.platformId)) {
 			this.addCursorAttributesAndEvents();
 

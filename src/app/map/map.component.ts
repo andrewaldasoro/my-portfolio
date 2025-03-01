@@ -3,9 +3,9 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	type ElementRef,
-	Inject,
-	ViewChild,
 	effect,
+	inject,
+	viewChild,
 } from "@angular/core";
 import { type Observable, Subject, takeUntil, tap } from "rxjs";
 import { environment } from "../../environments/environment";
@@ -35,15 +35,14 @@ import { TorontoNeighbourhoodsService } from "./toronto-neighbourhoods.service";
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
-	@ViewChild("map", { static: true }) mapContainer!: ElementRef;
+	private torontoNeighbourhoodsService = inject(TorontoNeighbourhoodsService);
+	private mapService = inject(MapService);
+
+	readonly mapContainer = viewChild.required<ElementRef>("map");
 
 	private unsubscriber = new Subject<void>();
 
-	constructor(
-		@Inject(TorontoNeighbourhoodsService)
-		private torontoNeighbourhoodsService: TorontoNeighbourhoodsService,
-		private mapService: MapService,
-	) {
+	constructor() {
 		effect(() => {
 			const created = this.mapService.mapCreated();
 
@@ -55,7 +54,7 @@ export class MapComponent implements AfterViewInit {
 
 	ngAfterViewInit(): void {
 		const mapOptions: mapboxgl.MapOptions = {
-			container: this.mapContainer.nativeElement,
+			container: this.mapContainer().nativeElement,
 			center: [-79.38, 43.72], // Centered on downtown Toronto
 			zoom: 11,
 		};

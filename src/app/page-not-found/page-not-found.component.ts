@@ -1,4 +1,4 @@
-import { Component, Inject, effect } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { ChangeColorService } from "../change-color.service";
 import { RouterService } from "../router.service";
 
@@ -8,12 +8,12 @@ import { RouterService } from "../router.service";
 	providers: [ChangeColorService],
 })
 export class PageNotFoundComponent {
+	private routerService = inject(RouterService);
+	private changeColorService = inject(ChangeColorService);
+
 	url = "";
 
-	constructor(
-		@Inject(RouterService) private routerService: RouterService,
-		@Inject(ChangeColorService) private changeColorService: ChangeColorService,
-	) {
+	constructor() {
 		effect(() => {
 			this.url = this.routerService.url();
 		});

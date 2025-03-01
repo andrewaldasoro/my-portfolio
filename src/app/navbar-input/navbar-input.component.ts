@@ -1,4 +1,4 @@
-import { Component, Inject, effect } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import type { Route } from "../router";
@@ -14,6 +14,9 @@ const routes = ["format-text"];
 	styleUrl: "./navbar-input.component.scss",
 })
 export class NavbarInputComponent {
+	private router = inject(Router);
+	private routerService = inject(RouterService);
+
 	value = "";
 	hint = "";
 	routes: Route[] = [];
@@ -28,10 +31,7 @@ export class NavbarInputComponent {
 	private trailingSlashes = new RegExp(/^(\/){1,}|(\/){1,}$/);
 	private twoOrMoreSlashes = new RegExp(/(\/){2,}/);
 
-	constructor(
-		@Inject(Router) private router: Router,
-		@Inject(RouterService) private routerService: RouterService,
-	) {
+	constructor() {
 		effect(() => {
 			this.routes = this.routerService.routes();
 		});

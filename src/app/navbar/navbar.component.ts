@@ -1,4 +1,4 @@
-import { Component, Inject, effect } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { NavbarInputComponent } from "../navbar-input/navbar-input.component";
 import type { Route } from "../router";
@@ -11,9 +11,11 @@ import { RouterService } from "../router.service";
 	styleUrl: "./navbar.component.scss",
 })
 export class NavbarComponent {
+	private routerService = inject(RouterService);
+
 	routes: Route[] = [];
 
-	constructor(@Inject(RouterService) private routerService: RouterService) {
+	constructor() {
 		effect(() => {
 			this.routes = this.routerService.routes();
 		});
