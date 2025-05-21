@@ -30,7 +30,6 @@ export abstract class BackgroundEffect {
 		this.options = environment.backgroundEffects;
 	}
 
-	// this is the same
 	init() {
 		const canvas = document.createElement("canvas") as HTMLCanvasElement;
 		canvas.className = "absolute w-full h-full";
@@ -47,13 +46,12 @@ export abstract class BackgroundEffect {
 		);
 		this.camera.position.z = 1000;
 
-		this.generateTextures(); // Pre-generate textures
-		this.startRender();
+		this.generateTextures();
+		this.startRendering();
 		this.listenToWindowResize();
 	}
 
-	// this is the same
-	private startRender() {
+	private startRendering() {
 		if (!this.renderer || !this.camera || !this.scene) return;
 
 		this.updateParticles();
@@ -85,14 +83,11 @@ export abstract class BackgroundEffect {
 	}
 
 	render() {
-		// this.geometry.attributes.opacity.needsUpdate = true;
-
 		this.renderer.render(this.scene, this.camera);
 	}
 
-	// this is the same
 	private listenToWindowResize() {
-		window.addEventListener("resize", () => this.startRender());
+		window.addEventListener("resize", () => this.startRendering());
 	}
 
 	abstract updateParticles(): void;
