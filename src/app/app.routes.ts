@@ -4,23 +4,23 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { SentenceCasePageComponent } from "./sentence-case-page/sentence-case-page.component";
 
 export const routes: Routes = [
-	{
-		path: "",
-		component: HomeComponent,
-	},
-	// { path: '', redirectTo: '/home', pathMatch: 'full' },
-	{
-		path: "format-text",
-		pathMatch: "full",
-		component: SentenceCasePageComponent,
-	},
-	// {
-	// 	path: "map",
-	// 	pathMatch: "full",
-	// 	component: MapComponent,
-	// },
-	{
-		path: "**",
-		component: PageNotFoundComponent,
-	},
+  {
+    path: "",
+    component: HomeComponent,
+  },
+  // { path: '', redirectTo: '/home', pathMatch: 'full' },
+  {
+    path: "format-text",
+    pathMatch: "full",
+    component: SentenceCasePageComponent,
+  },
+  // {
+  // 	path: "map",
+  // 	pathMatch: "full",
+  // 	component: MapComponent,
+  // },
+  {
+    path: "**",
+    component: PageNotFoundComponent,
+  },
 ];

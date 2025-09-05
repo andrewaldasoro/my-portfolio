@@ -1,16 +1,23 @@
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient, withFetch } from "@angular/common/http";
+import { TestBed } from "@angular/core/testing";
+import { OpenDataService } from "./open-data/open-data.service";
+import { TorontoNeighbourhoodsService } from "./toronto-neighbourhoods.service";
 
-import { TorontoNeighbourhoodsService } from './toronto-neighbourhoods.service';
-
-describe('TorontoNeighbourhoodsService', () => {
+describe("TorontoNeighbourhoodsService", () => {
   let service: TorontoNeighbourhoodsService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        TorontoNeighbourhoodsService,
+        OpenDataService,
+        provideHttpClient(withFetch()),
+      ],
+    });
     service = TestBed.inject(TorontoNeighbourhoodsService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

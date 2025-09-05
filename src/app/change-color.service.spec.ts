@@ -3,14 +3,16 @@ import { TestBed } from "@angular/core/testing";
 import { ChangeColorService } from "./change-color.service";
 
 describe("ChangeColorService", () => {
-	let service: ChangeColorService;
+  let service: ChangeColorService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(ChangeColorService);
-	});
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [ChangeColorService],
+    });
+    service = TestBed.inject(ChangeColorService);
+  });
 
-	it("should be created", () => {
-		expect(service).toBeTruthy();
-	});
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
 });

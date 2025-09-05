@@ -5,17 +5,17 @@ import { BackgroundLettersEffect } from "./background-letters-effect";
 
 @Injectable()
 export class BackgroundEffectService {
-	init(type: "dots" | "chars") {
-		let backgroundEffect: BackgroundEffect;
-		switch (type) {
-			case "dots":
-				backgroundEffect = new BackgroundDotsEffect();
-				break;
-			case "chars":
-				backgroundEffect = new BackgroundLettersEffect();
-				break;
-		}
+  init(type: "dots" | "chars") {
+    let backgroundEffect: BackgroundEffect;
+    switch (type) {
+      case "dots":
+        backgroundEffect = new BackgroundDotsEffect();
+        break;
+      case "chars":
+        backgroundEffect = new BackgroundLettersEffect();
+        break;
+    }
 
-		backgroundEffect.init();
-	}
+    backgroundEffect.init();
+  }
 }

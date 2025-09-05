@@ -5,21 +5,21 @@ import { routes } from "../app.routes";
 import { NavbarComponent } from "./navbar.component";
 
 describe("NavbarComponent", () => {
-	let component: NavbarComponent;
-	let fixture: ComponentFixture<NavbarComponent>;
+  let component: NavbarComponent;
+  let fixture: ComponentFixture<NavbarComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [RouterOutlet, NavbarComponent],
-			providers: [provideRouter(routes)],
-		}).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RouterOutlet, NavbarComponent],
+      providers: [provideRouter(routes)],
+    }).compileComponents();
 
-		fixture = TestBed.createComponent(NavbarComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    fixture = TestBed.createComponent(NavbarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-	it("should create", () => {
-		expect(component).toBeTruthy();
-	});
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });
