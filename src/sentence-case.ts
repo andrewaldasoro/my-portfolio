@@ -52,15 +52,16 @@ export function toCamelCase(s: string): string {
 	return splitWords(s)
 		.map(
 			(w, i) =>
-				(i !== 0 ? w[0].toUpperCase() : w[0]) + w.substring(1).toLowerCase(),
+				(i !== 0 ? w[0].toUpperCase() : w[0].toLowerCase()) +
+				w.substring(1).toLowerCase(),
 		)
 		.join("");
 }
 
-export function toGoCase(s: string): string {
+export function toKebabCase(s: string): string {
 	return splitWords(s)
-		.map((w, i) => (i !== 0 ? w[0].toUpperCase() : w[0]) + w.substring(1))
-		.join("");
+		.map((w) => w.toLowerCase())
+		.join("-");
 }
 
 export function toPascalCase(s: string): string {
@@ -81,16 +82,16 @@ export function toUpperCase(s: string): string {
 		.join("_");
 }
 
-export function toKebabCase(s: string): string {
-	return splitWords(s)
-		.map((w) => w.toLowerCase())
-		.join("-");
-}
-
 export function toCobolCase(s: string): string {
 	return splitWords(s)
 		.map((w) => w.toUpperCase())
 		.join("-");
+}
+
+export function toGoCase(s: string): string {
+	return splitWords(s)
+		.map((w, i) => (i !== 0 ? w[0].toUpperCase() : w[0]) + w.substring(1))
+		.join("");
 }
 
 export function convertString(s: string, format: SentenceCase): string {
