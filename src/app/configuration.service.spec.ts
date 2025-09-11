@@ -4,6 +4,7 @@ import {
   provideHttpClientTesting,
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { beforeEach, describe, expect, it } from "vitest";
 import { ConfigurationService } from "./configuration.service";
 
 const DEFAULT_CONFIG = {

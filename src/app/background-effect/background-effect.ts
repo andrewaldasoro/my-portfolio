@@ -31,6 +31,28 @@ export abstract class BackgroundEffect {
   }
 
   init() {
+    // Skip in non-DOM or non-WebGL environments (e.g., unit tests with jsdom)
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      return;
+    }
+
+    // Probe WebGL availability safely; jsdom throws on getContext
+    const probeCanvas = document.createElement("canvas") as HTMLCanvasElement;
+    let hasWebGL = false;
+    try {
+      const gl =
+        (probeCanvas.getContext("webgl2") as WebGL2RenderingContext | null) ??
+        (probeCanvas.getContext("webgl") as WebGLRenderingContext | null) ??
+        null;
+      hasWebGL = gl !== null;
+    } catch {
+      hasWebGL = false;
+    }
+
+    if (!hasWebGL) {
+      return;
+    }
+
     const canvas = document.createElement("canvas") as HTMLCanvasElement;
     canvas.className = "absolute w-full h-full";
     document.body.prepend(canvas);

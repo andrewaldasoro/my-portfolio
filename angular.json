@@ -75,18 +75,11 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "assets": ["src/assets"],
-            "inlineStyleLanguage": "scss",
-            "polyfills": [
-              "@angular/localize/init",
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "scripts": [],
-            "styles": ["src/styles.scss"],
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "tsconfig.spec.json",
+            "runner": "vitest",
+            "buildTarget": "my-portfolio:build:development"
           }
         }
       },

@@ -1,8 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
-import { Component, HostListener, PLATFORM_ID, inject } from "@angular/core";
+import { Component, HostListener, inject, PLATFORM_ID } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import gsap from "gsap";
 import { BackgroundEffectService } from "./background-effect/background-effect.service";
+import { BackgroundLettersEffect } from "./background-effect/background-letters-effect";
 import { ChangeColorService } from "./change-color.service";
 import { ConfigurationService } from "./configuration.service";
 import { BACKGROUND_COLOR, COLOR } from "./constants";
@@ -14,7 +15,6 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
   imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
-  providers: [ChangeColorService, BackgroundEffectService],
 })
 export class AppComponent {
   private platformId = inject(PLATFORM_ID);
@@ -36,7 +36,7 @@ export class AppComponent {
   }
 
   @HostListener("document:mouseleave", ["$event"]) handleMouseLeave(
-    event: MouseEvent,
+    _: MouseEvent,
   ) {
     gsap.to("#cursor", {
       scale: 0,
@@ -46,7 +46,7 @@ export class AppComponent {
   }
 
   @HostListener("document:mouseenter", ["$event"]) handleMouseEnter(
-    event: MouseEvent,
+    _: MouseEvent,
   ) {
     const cursor = document.getElementById("cursor") as HTMLDivElement | null;
     if (cursor && cursor.style.display === "") {
@@ -68,7 +68,7 @@ export class AppComponent {
       this.addCursorAttributesAndEvents();
 
       this.setTheme();
-      this.backgroundEffectsService.init("chars");
+      this.backgroundEffectsService.init(new BackgroundLettersEffect());
     }
   }
 
