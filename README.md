@@ -2,4 +2,4 @@
 
 [![Test](https://github.com/andrewaldasoro/my-portfolio/actions/workflows/test.yml/badge.svg)](https://github.com/andrewaldasoro/my-portfolio/actions/workflows/test.yml)
 
-[Demo Proyect](https://develop.andrewaldasoro.me)
+[Demo Proyect](https://andrewaldasoro.me)
