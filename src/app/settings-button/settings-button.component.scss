@@ -1,17 +1,5 @@
-// :host {
-//   user-select: none;
-//   display: flex;
-//   align-items: center;
-// }
-
-.setting-button {
-  user-select: none;
-  width: 32px;
-  height: 32px;
-  color: var(--fgColor-muted, var(--color-fg-muted));
-  background: transparent;
-  border: solid 1px #30363d;
-  border-radius: 2px;
+:host {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  user-select: none;
 }

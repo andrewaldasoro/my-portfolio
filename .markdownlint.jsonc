@@ -1,6 +1,6 @@
 {
-	"default": true,
-	"MD033": {
-		"allowed_elements": ["h1", "tt", "p", "a", "img", "blockquote"]
-	}
+  "default": true,
+  "MD033": {
+    "allowed_elements": ["h1", "tt", "p", "a", "img", "blockquote"]
+  }
 }

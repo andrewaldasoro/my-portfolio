@@ -1,22 +1,22 @@
 import { type ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { beforeEach, describe, expect, it } from "vitest";
 import { SentenceCasePageComponent } from "./sentence-case-page.component";
 
 describe("NotFoundComponent", () => {
-	let component: SentenceCasePageComponent;
-	let fixture: ComponentFixture<SentenceCasePageComponent>;
+  let component: SentenceCasePageComponent;
+  let fixture: ComponentFixture<SentenceCasePageComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [SentenceCasePageComponent],
-		}).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SentenceCasePageComponent],
+    }).compileComponents();
 
-		fixture = TestBed.createComponent(SentenceCasePageComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    fixture = TestBed.createComponent(SentenceCasePageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-	it("should create", () => {
-		expect(component).toBeTruthy();
-	});
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

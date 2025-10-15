@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone, signal } from "@angular/core";
+import { inject, Injectable, NgZone, signal } from "@angular/core";
 import mapboxgl from "mapbox-gl";
 import { Subscription } from "rxjs";
 import { first } from "rxjs/operators";
@@ -8,98 +8,97 @@ import type { Neighbourhood } from "./map.types";
 
 @Injectable()
 export class MapService {
-	mapCreated = signal(false);
-	mapInstance?: mapboxgl.Map;
+  private zone = inject(NgZone);
+  protected configurationService = inject(ConfigurationService);
 
-	private subscription = new Subscription();
+  mapCreated = signal(false);
+  mapInstance?: mapboxgl.Map;
 
-	constructor(
-		private zone: NgZone,
-		@Inject(ConfigurationService)
-		protected configurationService: ConfigurationService,
-	) {
-		if (!environment.mapboxAccessToken) {
-			throw new Error("'mapboxAccessToken' not found in configuration");
-		}
+  private subscription = new Subscription();
 
-		mapboxgl.accessToken = environment.mapboxAccessToken;
-	}
+  constructor() {
+    if (!environment.mapboxAccessToken) {
+      throw new Error("'mapboxAccessToken' not found in configuration");
+    }
 
-	initMap(options: mapboxgl.MapOptions) {
-		this.zone.onStable.pipe(first()).subscribe(() => {
-			NgZone.assertNotInAngularZone();
-			this.mapInstance = new mapboxgl.Map(options);
-			this.mapInstance.on("load", () => {
-				this.mapCreated.set(true);
-			});
-		});
+    mapboxgl.accessToken = environment.mapboxAccessToken;
+  }
 
-		this.subscription.add(
-			this.zone.onMicrotaskEmpty.subscribe(() => this.applyChanges()),
-		);
-	}
+  initMap(options: mapboxgl.MapOptions) {
+    this.zone.onStable.pipe(first()).subscribe(() => {
+      NgZone.assertNotInAngularZone();
+      this.mapInstance = new mapboxgl.Map(options);
+      this.mapInstance.on("load", () => {
+        this.mapCreated.set(true);
+      });
+    });
 
-	destoryMap() {
-		if (this.mapInstance) {
-			this.subscription.unsubscribe();
-			this.mapInstance.remove();
-		}
-	}
+    this.subscription.add(
+      this.zone.onMicrotaskEmpty.subscribe(() => this.applyChanges()),
+    );
+  }
 
-	applyChanges() {
-		this.zone.runOutsideAngular(() => {
-			// this.removeMarkers();
-			// this.removePopups();
-			// this.removeImages();
-		});
-	}
+  destoryMap() {
+    if (this.mapInstance) {
+      this.subscription.unsubscribe();
+      this.mapInstance.remove();
+    }
+  }
 
-	addNeighbourhoods(neighbourhoods: Neighbourhood[]) {
-		this.zone.runOutsideAngular(() => {
-			if (!this.mapInstance) throw "map not found";
+  applyChanges() {
+    this.zone.runOutsideAngular(() => {
+      // this.removeMarkers();
+      // this.removePopups();
+      // this.removeImages();
+    });
+  }
 
-			const sourceId = "neighbourhoods";
-			const features: GeoJSON.Feature[] = [];
-			for (const neighbourhood of neighbourhoods) {
-				const { geometry, ...properties } = neighbourhood;
+  addNeighbourhoods(neighbourhoods: Neighbourhood[]) {
+    this.zone.runOutsideAngular(() => {
+      if (!this.mapInstance) throw "map not found";
 
-				const feature: GeoJSON.Feature = {
-					type: "Feature",
-					properties,
-					geometry,
-				};
-				features.push(feature);
-			}
+      const sourceId = "neighbourhoods";
+      const features: GeoJSON.Feature[] = [];
+      for (const neighbourhood of neighbourhoods) {
+        const { geometry, ...properties } = neighbourhood;
 
-			this.mapInstance.addSource(sourceId, {
-				type: "geojson",
-				data: {
-					type: "FeatureCollection",
-					features,
-				},
-			});
+        const feature: GeoJSON.Feature = {
+          type: "Feature",
+          properties,
+          geometry,
+        };
+        features.push(feature);
+      }
 
-			this.mapInstance.addLayer({
-				id: sourceId,
-				type: "fill",
-				source: sourceId,
-				layout: {},
-				paint: {
-					"fill-color": "#0080ff",
-					"fill-opacity": 0.5,
-				},
-			});
+      this.mapInstance.addSource(sourceId, {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features,
+        },
+      });
 
-			this.mapInstance.addLayer({
-				id: "outline",
-				type: "line",
-				source: sourceId,
-				layout: {},
-				paint: {
-					"line-color": "#0090ff",
-					"line-width": 1,
-				},
-			});
-		});
-	}
+      this.mapInstance.addLayer({
+        id: sourceId,
+        type: "fill",
+        source: sourceId,
+        layout: {},
+        paint: {
+          "fill-color": "#0080ff",
+          "fill-opacity": 0.5,
+        },
+      });
+
+      this.mapInstance.addLayer({
+        id: "outline",
+        type: "line",
+        source: sourceId,
+        layout: {},
+        paint: {
+          "line-color": "#0090ff",
+          "line-width": 1,
+        },
+      });
+    });
+  }
 }

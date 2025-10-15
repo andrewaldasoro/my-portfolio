@@ -8,5 +8,5 @@ import { appConfig } from "./app/app.config";
 console.debug(`Version: ${pjson.version}`);
 
 bootstrapApplication(AppComponent, appConfig).catch((err) =>
-	console.error(err),
+  console.error(err),
 );

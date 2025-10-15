@@ -1,11 +1,11 @@
 import {
-	type AfterViewInit,
-	ChangeDetectionStrategy,
-	Component,
-	type ElementRef,
-	Inject,
-	ViewChild,
-	effect,
+  type AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  type ElementRef,
+  effect,
+  inject,
+  viewChild,
 } from "@angular/core";
 import { type Observable, Subject, takeUntil, tap } from "rxjs";
 import { environment } from "../../environments/environment";
@@ -15,10 +15,10 @@ import { OpenDataService } from "./open-data/open-data.service";
 import { TorontoNeighbourhoodsService } from "./toronto-neighbourhoods.service";
 
 @Component({
-	selector: "app-map",
-	template: "<div #map></div>",
-	styles: [
-		`
+  selector: "app-map",
+  template: "<div #map></div>",
+  styles: [
+    `
 		:host{
 			display: block;
 			height: 100%;
@@ -30,57 +30,56 @@ import { TorontoNeighbourhoodsService } from "./toronto-neighbourhoods.service";
 			width: 100%;
 		}
 		`,
-	],
-	providers: [MapService, TorontoNeighbourhoodsService, OpenDataService],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+  ],
+  providers: [MapService, TorontoNeighbourhoodsService, OpenDataService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
-	@ViewChild("map", { static: true }) mapContainer!: ElementRef;
+  private torontoNeighbourhoodsService = inject(TorontoNeighbourhoodsService);
+  private mapService = inject(MapService);
 
-	private unsubscriber = new Subject<void>();
+  readonly mapContainer = viewChild.required<ElementRef>("map");
 
-	constructor(
-		@Inject(TorontoNeighbourhoodsService)
-		private torontoNeighbourhoodsService: TorontoNeighbourhoodsService,
-		private mapService: MapService,
-	) {
-		effect(() => {
-			const created = this.mapService.mapCreated();
+  private unsubscriber = new Subject<void>();
 
-			if (created) {
-				this.onMapCreated();
-			}
-		});
-	}
+  constructor() {
+    effect(() => {
+      const created = this.mapService.mapCreated();
 
-	ngAfterViewInit(): void {
-		const mapOptions: mapboxgl.MapOptions = {
-			container: this.mapContainer.nativeElement,
-			center: [-79.38, 43.72], // Centered on downtown Toronto
-			zoom: 11,
-		};
+      if (created) {
+        this.onMapCreated();
+      }
+    });
+  }
 
-		if (!environment.production) {
-			mapOptions.devtools = true;
-		}
+  ngAfterViewInit(): void {
+    const mapOptions: mapboxgl.MapOptions = {
+      container: this.mapContainer().nativeElement,
+      center: [-79.38, 43.72], // Centered on downtown Toronto
+      zoom: 11,
+    };
 
-		this.mapService.initMap(mapOptions);
-	}
+    if (!environment.production) {
+      mapOptions.devtools = true;
+    }
 
-	ngOnDestroy(): void {
-		this.mapService.destoryMap();
-	}
+    this.mapService.initMap(mapOptions);
+  }
 
-	private onMapCreated(): void {
-		this.loadNeighbourhoods().subscribe();
-	}
+  ngOnDestroy(): void {
+    this.mapService.destoryMap();
+  }
 
-	private loadNeighbourhoods(): Observable<Neighbourhood[]> {
-		return this.torontoNeighbourhoodsService.getTorontoNeighbourhoods().pipe(
-			takeUntil(this.unsubscriber),
-			tap((neighbourhoods) => {
-				this.mapService.addNeighbourhoods(neighbourhoods);
-			}),
-		);
-	}
+  private onMapCreated(): void {
+    this.loadNeighbourhoods().subscribe();
+  }
+
+  private loadNeighbourhoods(): Observable<Neighbourhood[]> {
+    return this.torontoNeighbourhoodsService.getTorontoNeighbourhoods().pipe(
+      takeUntil(this.unsubscriber),
+      tap((neighbourhoods) => {
+        this.mapService.addNeighbourhoods(neighbourhoods);
+      }),
+    );
+  }
 }

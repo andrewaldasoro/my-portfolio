@@ -1,4 +1,4 @@
-import { Component, Inject, effect } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import type { Route } from "../router";
@@ -8,179 +8,179 @@ import { RouterService } from "../router.service";
 const routes = ["format-text"];
 
 @Component({
-	selector: "app-navbar-input",
-	imports: [FormsModule],
-	templateUrl: "./navbar-input.component.html",
-	styleUrl: "./navbar-input.component.scss",
+  selector: "app-navbar-input",
+  imports: [FormsModule],
+  templateUrl: "./navbar-input.component.html",
+  styleUrl: "./navbar-input.component.scss",
 })
 export class NavbarInputComponent {
-	value = "";
-	hint = "";
-	routes: Route[] = [];
+  private router = inject(Router);
+  private routerService = inject(RouterService);
 
-	get actualPath() {
-		const routesLength = this.routes.length;
-		if (routesLength === 0) return "";
+  value = "";
+  hint = "";
+  routes: Route[] = [];
 
-		return this.routes[routesLength - 1].path;
-	}
+  get actualPath() {
+    const routesLength = this.routes.length;
+    if (routesLength === 0) return "";
 
-	private trailingSlashes = new RegExp(/^(\/){1,}|(\/){1,}$/);
-	private twoOrMoreSlashes = new RegExp(/(\/){2,}/);
+    return this.routes[routesLength - 1].path;
+  }
 
-	constructor(
-		@Inject(Router) private router: Router,
-		@Inject(RouterService) private routerService: RouterService,
-	) {
-		effect(() => {
-			this.routes = this.routerService.routes();
-		});
-	}
+  private trailingSlashes = new RegExp(/^(\/){1,}|(\/){1,}$/);
+  private twoOrMoreSlashes = new RegExp(/(\/){2,}/);
 
-	onKeyDown(event: KeyboardEvent): void {
-		const key = event.key;
+  constructor() {
+    effect(() => {
+      this.routes = this.routerService.routes();
+    });
+  }
 
-		switch (key) {
-			case "Tab":
-				event.preventDefault();
-				this.autocomplete();
-				break;
+  onKeyDown(event: KeyboardEvent): void {
+    const key = event.key;
 
-			case "Enter":
-				try {
-					this.onRedirect();
-				} catch (error) {
-					// change to notification
-					console.error(error);
-				}
-				break;
+    switch (key) {
+      case "Tab":
+        event.preventDefault();
+        this.autocomplete();
+        break;
 
-			case "Backspace":
-			case "Escape":
-				this.clearHint();
-				break;
-		}
-	}
+      case "Enter":
+        try {
+          this.onRedirect();
+        } catch (error) {
+          // change to notification
+          console.error(error);
+        }
+        break;
 
-	onModelChange(value: string): void {
-		this.loadHint();
-	}
+      case "Backspace":
+      case "Escape":
+        this.clearHint();
+        break;
+    }
+  }
 
-	private loadHint(): void {
-		if (!this.value) return;
-		// let actualPath = location.hash.substring(1);
-		// console.log(actualPath);
+  onModelChange(value: string): void {
+    this.loadHint();
+  }
 
-		// if (!actualPath.endsWith('/')) {
-		//   actualPath += '/';
-		// }
+  private loadHint(): void {
+    if (!this.value) return;
+    // let actualPath = location.hash.substring(1);
+    // console.log(actualPath);
 
-		// const filteredRoutes = routes.filter((r) => r.startsWith(actualPath));
+    // if (!actualPath.endsWith('/')) {
+    //   actualPath += '/';
+    // }
 
-		this.hint = routes.find((route) => route.startsWith(this.value)) || "";
-	}
+    // const filteredRoutes = routes.filter((r) => r.startsWith(actualPath));
 
-	private onRedirect(): void {
-		if (!this.value) return;
+    this.hint = routes.find((route) => route.startsWith(this.value)) || "";
+  }
 
-		const pathErrors = this.getPathErrors(this.value);
-		if (pathErrors.length > 0) {
-			throw pathErrors;
-		}
+  private onRedirect(): void {
+    if (!this.value) return;
 
-		const nextPath = this.value;
-		let actualPath = this.actualPath;
+    const pathErrors = this.getPathErrors(this.value);
+    if (pathErrors.length > 0) {
+      throw pathErrors;
+    }
 
-		if (nextPath === "..") {
-			actualPath = this.handleGoOneLevelAbove(actualPath);
-			this.redirect(actualPath);
-			return;
-		}
+    const nextPath = this.value;
+    let actualPath = this.actualPath;
 
-		if (nextPath.includes("/")) {
-			actualPath = this.handleMultiplePaths(actualPath, nextPath);
-			this.redirect(actualPath);
-			return;
-		}
+    if (nextPath === "..") {
+      actualPath = this.handleGoOneLevelAbove(actualPath);
+      this.redirect(actualPath);
+      return;
+    }
 
-		actualPath += this.addFirstSlash(nextPath);
-		this.redirect(actualPath);
-		return;
-	}
+    if (nextPath.includes("/")) {
+      actualPath = this.handleMultiplePaths(actualPath, nextPath);
+      this.redirect(actualPath);
+      return;
+    }
 
-	private redirect(path: string): void {
-		this.router.navigate([path]);
-		this.clearValue();
-	}
+    actualPath += this.addFirstSlash(nextPath);
+    this.redirect(actualPath);
+    return;
+  }
 
-	private handleGoOneLevelAbove(actualPath: string): string {
-		if (actualPath === "/") return actualPath;
+  private redirect(path: string): void {
+    this.router.navigate([path]);
+    this.clearValue();
+  }
 
-		const oneLevelAbovePath = actualPath
-			.slice(1)
-			.split("/")
-			.slice(0, -1)
-			.join("/");
+  private handleGoOneLevelAbove(actualPath: string): string {
+    if (actualPath === "/") return actualPath;
 
-		return this.addFirstSlash(oneLevelAbovePath);
-	}
+    const oneLevelAbovePath = actualPath
+      .slice(1)
+      .split("/")
+      .slice(0, -1)
+      .join("/");
 
-	private handleMultiplePaths(actualPath: string, nextPath: string): string {
-		let _actualPath = actualPath;
-		const paths = nextPath.split("/");
-		for (const path of paths) {
-			if (path === "..") {
-				_actualPath = this.handleGoOneLevelAbove(actualPath);
-			} else {
-				_actualPath += this.addFirstSlash(path);
-			}
-		}
+    return this.addFirstSlash(oneLevelAbovePath);
+  }
 
-		return _actualPath;
-	}
+  private handleMultiplePaths(actualPath: string, nextPath: string): string {
+    let _actualPath = actualPath;
+    const paths = nextPath.split("/");
+    for (const path of paths) {
+      if (path === "..") {
+        _actualPath = this.handleGoOneLevelAbove(actualPath);
+      } else {
+        _actualPath += this.addFirstSlash(path);
+      }
+    }
 
-	private autocomplete(): void {
-		if (this.hint) {
-			this.value = this.hint;
-		}
+    return _actualPath;
+  }
 
-		this.clearHint();
-	}
+  private autocomplete(): void {
+    if (this.hint) {
+      this.value = this.hint;
+    }
 
-	private clearValue() {
-		this.clearHint();
-		this.value = "";
-	}
+    this.clearHint();
+  }
 
-	private clearHint() {
-		this.hint = "";
-	}
+  private clearValue() {
+    this.clearHint();
+    this.value = "";
+  }
 
-	private addFirstSlash(path: string): string {
-		return `/${path}`;
-	}
+  private clearHint() {
+    this.hint = "";
+  }
 
-	private getPathErrors(path: string): Error[] {
-		const errors: Error[] = [];
+  private addFirstSlash(path: string): string {
+    return `/${path}`;
+  }
 
-		if (this.hasTrailingSlashes(path)) {
-			const error = new Error("the path can't contain trailing slashes");
-			errors.push(error);
-		}
+  private getPathErrors(path: string): Error[] {
+    const errors: Error[] = [];
 
-		if (this.hasTwoOrMoreSlashes(path)) {
-			const error = new Error("the path can't contain repeated slashes");
-			errors.push(error);
-		}
+    if (this.hasTrailingSlashes(path)) {
+      const error = new Error("the path can't contain trailing slashes");
+      errors.push(error);
+    }
 
-		return errors;
-	}
+    if (this.hasTwoOrMoreSlashes(path)) {
+      const error = new Error("the path can't contain repeated slashes");
+      errors.push(error);
+    }
 
-	private hasTrailingSlashes(s: string): boolean {
-		return this.trailingSlashes.test(s);
-	}
+    return errors;
+  }
 
-	private hasTwoOrMoreSlashes(s: string): boolean {
-		return this.twoOrMoreSlashes.test(s);
-	}
+  private hasTrailingSlashes(s: string): boolean {
+    return this.trailingSlashes.test(s);
+  }
+
+  private hasTwoOrMoreSlashes(s: string): boolean {
+    return this.twoOrMoreSlashes.test(s);
+  }
 }
