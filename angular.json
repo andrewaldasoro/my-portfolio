@@ -79,7 +79,7 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "runner": "vitest",
-            "buildTarget": "my-portfolio:build:development"
+            "buildTarget": "my-portfolio:build:production"
           }
         }
       },

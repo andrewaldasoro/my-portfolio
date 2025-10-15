@@ -1,5 +1,7 @@
 // OD == open data
 
+import type { Geometry } from "geojson";
+
 export interface Response<T> {
   result: T;
 }
@@ -34,5 +36,5 @@ interface Neighbourhood {
   CLASSIFICATION: string;
   CLASSIFICATION_CODE: string;
   OBJECTID: number;
-  geometry: GeoJSON.Geometry;
+  geometry: Geometry;
 }

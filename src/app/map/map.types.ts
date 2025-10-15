@@ -1,3 +1,5 @@
+import type { Geometry } from "geojson";
+
 export interface Neighbourhood {
   id: number;
   areaId: number;
@@ -10,5 +12,5 @@ export interface Neighbourhood {
   // classsification: string;
   // classificationCode: string;
   // objectId: number;
-  geometry: GeoJSON.Geometry;
+  geometry: Geometry;
 }

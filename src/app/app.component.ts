@@ -13,6 +13,7 @@ import { SettingsButtonComponent } from "./settings-button/settings-button.compo
 @Component({
   selector: "app-root",
   imports: [RouterOutlet, NavbarComponent, SettingsButtonComponent],
+  providers: [ChangeColorService, BackgroundEffectService],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
