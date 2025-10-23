@@ -7,7 +7,7 @@ updates:
       interval: "weekly"
     versioning-strategy: increase
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "⬆️ Update > "
       include: "scope"
     labels:
       - "dependencies"
@@ -20,7 +20,7 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "chore(actions)"
+      prefix: "⬆️ Update > "
     labels:
       - "ci"
       - "automated"
