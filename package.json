@@ -56,7 +56,7 @@
     "build": "ng build",
     "ng": "ng",
     "preinstall": "npx only-allow pnpm",
-    "serve:ssr:my-portfolio": "node dist/my-portfolio/server/server.mjs",
+    "serve:ssr": "node dist/my-portfolio/server/server.mjs",
     "start": "ng serve",
     "test": "ng test",
     "watch": "ng build --watch --configuration development",
